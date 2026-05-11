@@ -7,7 +7,9 @@ require("dotenv").config();
 var app = require('../app');
 var debug = require('debug')('b2bkyc:server');
 var http = require('http');
+var connectToDb = require('../services/database');
 
+connectToDb();
 /**
  * Get port from environment and store in Express.
  */
