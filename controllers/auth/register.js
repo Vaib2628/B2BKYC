@@ -1,24 +1,37 @@
-/* 
-Register flow 
-1. Create the user with isVerified false 
-2. create the business workspace 
-3. create the role for the user as BUSINESS_OWNER in the workspace 
-4. map the user to the workspace with the role 
-5. Attach the permissions to the role - ALL permission for the business owner role that's already managed by the checkpermission middleware so nneed to do anything extra for that
-
-*/
-
+const createHttpError = require("http-errors");
+const User = require("../../models/User");
 const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants");
+const generateAccessAndRefreshTokens = require("../../utils/generateAccessAndRefreshTokens");
+const sendVerificationMail = require("../../utils/sendVerificationMail");
+const generateRandomToken = require("../../utils/generateRandomToken");
+const constants = require("../../constants/constants");
 
 module.exports = async function register(userdata) {
-    const isConfirmPassword = userdata.password === userdata.confirmPassword;
-    if (!isConfirmPassword) throw new createHttpError(STATUS_CODES.BAD_REQUEST, ERROR_MESSAGES.CONFIRM_PASSWORD_NOT_MATCHED);
+    const { confirmPassword, ...userData } = userdata;
 
-    const isUserExists = await User.findOne({
-        $or: [{ email: userdata.email }, { phoneNumber: userdata.phoneNumber }]
+    if (userData.password !== confirmPassword) {
+        throw new createHttpError.BadRequest(ERROR_MESSAGES.CONFIRM_PASSWORD_NOT_MATCHED);
+    }
+
+    const existingUser = await User.findOne({
+        email: userData.email
     }).lean();
-    if (isUserExists) throw new createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.USER_EXISTS);
 
-    const user = await User.create(userdata)
-    return generateAccessAndRefreshTokens(user._id);
+    if (existingUser) {
+        throw new createHttpError.Conflict(ERROR_MESSAGES.USER_EXISTS);
+    }
+
+    const user = await User.create(userData);
+
+    const { hashedToken, rawToken } = generateRandomToken();
+    await sendVerificationMail({
+        to: user.email,
+        token: rawToken,
+        businessName: user.businessName || "TrustVault"
+    });
+    user.emailVerifyToken = hashedToken;
+    user.emailVerifyTokenExpiry = Date.now() + constants.EMAIL_VERIFICATION_EXPIRY;
+    await user.save();
+    
+    return user;
 };

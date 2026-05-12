@@ -7,13 +7,24 @@ function notFound(req, res, next) {
 
 // error handler
 function errorHandler(err, req, res, next) {
-    // set locals, only providing error in development
-    res.locals.message = err.message;
-    res.locals.error = req.app.get("env") === "development" ? err : {};
+    const statusCode = err.status || err.statusCode || 500;
 
-    // render the error page
-    res.status(err.status || 500);
-    res.render("error");
+    // Helpful for debugging in development and also for logging errors in production
+    console.log({
+        message: err.message,
+        stack : err.stack,
+        url: req.originalUrl,
+        method: req.method
+    })
+
+    const isDev = process.env.NODE_ENV === "development";
+    return res.status(statusCode).json({
+        success: false,
+        message: err.message || "Internal Server Error",
+        ...(isDev && {
+            stack: err.stack
+        })
+    });
 }
 
 module.exports = {

@@ -1,6 +1,6 @@
 const createHttpError = require("http-errors");
-const Membership = require("../models/membership.model");
-const RolePermission = require("../models/rolePermission.model");
+const Membership = require("../models/Membership");
+const RolePermission = require("../models/RolePermission");
 const Role = require("../models/Role");
 
 const requirePermission = (permissionKey) => {

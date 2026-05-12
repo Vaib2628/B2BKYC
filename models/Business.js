@@ -4,7 +4,6 @@ const businessSchema = new mongoose.Schema(
     {
         legalName: { type: String, required: true, trim: true },
         tradeName: { type: String, trim: true },
-        slug: { type: String, unique: true, lowercase: true, trim: true },
         companyType: {
             type: String,
             enum: ["PRIVATE_LIMITED", "PUBLIC_LIMITED", "LLP", "PARTNERSHIP", "SOLE_PROPRIETORSHIP", "OTHER"],
@@ -26,20 +25,6 @@ const businessSchema = new mongoose.Schema(
             },
             pincode: String
         },
-        verificationStatus: {
-            gstVerified: {
-                type: Boolean,
-                default: false
-            },
-            panVerified: {
-                type: Boolean,
-                default: false
-            },
-            cinVerified: {
-                type: Boolean,
-                default: false
-            }
-        },
         kycStatus: {
             type: String,
             enum: ["DRAFT", "UNDER_REVIEW", "VERIFIED", "REJECTED"],
@@ -51,7 +36,6 @@ const businessSchema = new mongoose.Schema(
             enum: ["ACTIVE", "SUSPENDED", "DEACTIVATED"],
             default: "ACTIVE"
         },
-        setupCompleted: { type: Boolean, default: false },
         primaryOwnerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
     },
     {

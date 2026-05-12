@@ -1,5 +1,6 @@
 const createHttpError = require("http-errors");
 const jwt = require("jsonwebtoken");
+
 module.exports = (req, res, next) => {
     const accessToken = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
 
@@ -7,7 +8,7 @@ module.exports = (req, res, next) => {
     try {
         const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
         req.user = {
-            userId: decoded.userId,
+            _id: decoded.userId,
             businessId: decoded.businessId
         };
         next();
