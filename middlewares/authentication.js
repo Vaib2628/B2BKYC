@@ -1,16 +1,27 @@
 const createHttpError = require("http-errors");
 const jwt = require("jsonwebtoken");
-const { STATUS_CODES } = require("../constants/errorConstants");
+const { STATUS_CODES, ERROR_MESSAGES } = require("../constants/errorConstants");
+const User = require("../models/User");
+const Membership = require("../models/Membership");
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
     const accessToken = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
 
     if (!accessToken) next(createHttpError(STATUS_CODES.UNAUTHORIZED, "Access token is missing"));
     try {
         const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+
+        const membership = await Membership.findOne({
+            userId: decoded._id,
+            businessId: decoded.businessId,
+            status: "ACTIVE"
+        });
+        if (!membership) throw new createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.UNAUTHORIZED);
+
         req.user = {
-            _id: decoded.userId,
-            businessId: decoded.businessId
+            _id: decoded._id,
+            businessId: decoded.businessId,
+            membershipId: membership._id
         };
         next();
     } catch (error) {

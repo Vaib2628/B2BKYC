@@ -21,6 +21,9 @@ module.exports = {
         INVALID_REFRESH_TOKEN: "Invalid refresh token.",
         INVALID_OR_EXPIRED_TOKEN: "Invalid or expired token.",
         TOKEN_NOT_FOUND: "Unauthorized request, Token not found or expired may be",
-        MEMBERSHIP_NOT_FOUND: "Membership not found."
+        MEMBERSHIP_NOT_FOUND: "Membership not found.",
+
+        UNAUTHORIZED: "Unauthenticated request."
+
     }
 };

@@ -18,7 +18,7 @@ module.exports = ({
     <body style="
         margin: 0;
         padding: 0;
-        background-color: #f4f7fb;
+        background-color: #f0f4f8;
         font-family: Arial, sans-serif;
     ">
 
@@ -26,159 +26,174 @@ module.exports = ({
             width="100%"
             cellpadding="0"
             cellspacing="0"
-            style="padding: 40px 0;"
+            style="padding: 48px 0;"
         >
-
             <tr>
                 <td align="center">
 
                     <table
-                        width="600"
+                        width="560"
                         cellpadding="0"
                         cellspacing="0"
                         style="
                             background: #ffffff;
-                            border-radius: 12px;
-                            padding: 40px;
-                            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+                            border-radius: 16px;
+                            overflow: hidden;
+                            border: 1px solid #e2e8f0;
                         "
                     >
 
-                        <!-- Brand -->
+                        <!-- Blue Header -->
                         <tr>
-                            <td align="center">
-
-                                <h1 style="
-                                    margin: 0;
-                                    color: #111827;
-                                    font-size: 28px;
-                                ">
-                                    ${businessName}
-                                </h1>
-
+                            <td style="
+                                background-color: #1e4ed8;
+                                padding: 28px 40px;
+                            ">
+                                <table cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="
+                                            background: rgba(255,255,255,0.18);
+                                            border-radius: 8px;
+                                            width: 36px;
+                                            height: 36px;
+                                            text-align: center;
+                                            vertical-align: middle;
+                                            font-size: 20px;
+                                            padding: 0 8px;
+                                        ">🔒</td>
+                                        <td style="
+                                            padding-left: 12px;
+                                            font-size: 20px;
+                                            font-weight: 600;
+                                            color: #ffffff;
+                                        ">
+                                            ${businessName}
+                                        </td>
+                                    </tr>
+                                </table>
                             </td>
                         </tr>
 
-                        <!-- Spacer -->
+                        <!-- Body -->
                         <tr>
-                            <td height="30"></td>
-                        </tr>
+                            <td style="padding: 36px 40px 32px;">
 
-                        <!-- Heading -->
-                        <tr>
-                            <td>
+                                <!-- Key icon -->
+                                <table cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
+                                    <tr>
+                                        <td style="
+                                            background: #eff6ff;
+                                            border-radius: 12px;
+                                            width: 52px;
+                                            height: 52px;
+                                            text-align: center;
+                                            vertical-align: middle;
+                                            font-size: 24px;
+                                        ">🔑</td>
+                                    </tr>
+                                </table>
 
-                                <h2 style="
-                                    margin: 0 0 16px;
-                                    color: #111827;
-                                    font-size: 24px;
-                                ">
-                                    Reset your password
-                                </h2>
-
-                                <p style="
-                                    margin: 0;
-                                    color: #4b5563;
-                                    font-size: 16px;
-                                    line-height: 1.7;
-                                ">
-                                    We received a request to reset your
-                                    account password. Click the button below
-                                    to create a new password.
-                                </p>
-
-                            </td>
-                        </tr>
-
-                        <!-- Spacer -->
-                        <tr>
-                            <td height="35"></td>
-                        </tr>
-
-                        <!-- CTA -->
-                        <tr>
-                            <td align="center">
-
-                                <a
-                                    href="${resetUrl}"
-
-                                    style="
-                                        display: inline-block;
-                                        padding: 14px 28px;
-                                        background-color: #111827;
-                                        color: #ffffff;
-                                        text-decoration: none;
-                                        border-radius: 8px;
-                                        font-size: 16px;
-                                        font-weight: 600;
-                                    "
-                                >
-                                    Reset Password
-                                </a>
-
-                            </td>
-                        </tr>
-
-                        <!-- Spacer -->
-                        <tr>
-                            <td height="35"></td>
-                        </tr>
-
-                        <!-- Fallback -->
-                        <tr>
-                            <td>
-
+                                <!-- Heading -->
                                 <p style="
                                     margin: 0 0 10px;
-                                    color: #6b7280;
-                                    font-size: 14px;
+                                    font-size: 22px;
+                                    font-weight: 600;
+                                    color: #0f172a;
+                                ">Reset your password</p>
+
+                                <!-- Body text -->
+                                <p style="
+                                    margin: 0 0 28px;
+                                    font-size: 15px;
+                                    color: #475569;
+                                    line-height: 1.7;
                                 ">
-                                    If the button above does not work,
-                                    copy and paste the following URL into
-                                    your browser:
+                                    We received a request to reset your account password.
+                                    Click the button below to create a new password.
                                 </p>
 
-                                <p style="
-                                    word-break: break-all;
-                                    color: #2563eb;
-                                    font-size: 14px;
-                                    line-height: 1.6;
-                                ">
-                                    ${resetUrl}
-                                </p>
+                                <!-- CTA Button -->
+                                <table cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="border-radius: 8px; background-color: #1e4ed8;">
+                                            <a
+                                                href="${resetUrl}"
+                                                style="
+                                                    display: inline-block;
+                                                    padding: 13px 28px;
+                                                    background-color: #1e4ed8;
+                                                    color: #ffffff;
+                                                    text-decoration: none;
+                                                    border-radius: 8px;
+                                                    font-size: 15px;
+                                                    font-weight: 600;
+                                                "
+                                            >
+                                                Reset password
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <!-- Fallback URL box -->
+                                <table
+                                    width="100%"
+                                    cellpadding="0"
+                                    cellspacing="0"
+                                    style="margin-top: 28px;"
+                                >
+                                    <tr>
+                                        <td style="
+                                            background: #f8fafc;
+                                            border: 1px solid #e2e8f0;
+                                            border-radius: 8px;
+                                            padding: 16px;
+                                        ">
+                                            <p style="
+                                                margin: 0 0 6px;
+                                                font-size: 13px;
+                                                color: #64748b;
+                                            ">
+                                                If the button doesn't work, copy and paste this link:
+                                            </p>
+                                            <p style="
+                                                margin: 0;
+                                                font-size: 13px;
+                                                color: #1e4ed8;
+                                                word-break: break-all;
+                                                line-height: 1.6;
+                                            ">
+                                                ${resetUrl}
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </table>
 
                             </td>
-                        </tr>
-
-                        <!-- Spacer -->
-                        <tr>
-                            <td height="30"></td>
                         </tr>
 
                         <!-- Footer -->
                         <tr>
-                            <td>
-
+                            <td style="
+                                padding: 20px 40px 28px;
+                                border-top: 1px solid #e2e8f0;
+                            ">
+                                <p style="
+                                    margin: 0 0 8px;
+                                    font-size: 13px;
+                                    color: #94a3b8;
+                                    line-height: 1.6;
+                                ">
+                                    ⏱ This link expires in <strong style="color: #64748b;">${expiryHours} hour${expiryHours !== 1 ? 's' : ''}</strong>.
+                                </p>
                                 <p style="
                                     margin: 0;
-                                    color: #9ca3af;
                                     font-size: 13px;
+                                    color: #94a3b8;
                                     line-height: 1.6;
                                 ">
-                                    This password reset link will expire in
-                                    ${expiryHours} hours.
+                                    If you didn't request this, you can safely ignore this email.
                                 </p>
-
-                                <p style="
-                                    margin-top: 12px;
-                                    color: #9ca3af;
-                                    font-size: 13px;
-                                    line-height: 1.6;
-                                ">
-                                    If you did not request a password reset,
-                                    you can safely ignore this email.
-                                </p>
-
                             </td>
                         </tr>
 
@@ -186,7 +201,6 @@ module.exports = ({
 
                 </td>
             </tr>
-
         </table>
 
     </body>
