@@ -3,13 +3,14 @@ const generateAccessAndRefreshTokens = require("../../utils/generateAccessAndRef
 const { ERROR_MESSAGES, STATUS_CODES } = require("../../constants/errorConstants");
 const User = require("../../models/User");
 const Membership = require("../../models/Membership");
+const Business = require("../../models/Business");
 
 module.exports = async (userData) => {
     const user = await User.findOne(
         { email: userData.email },
         "failedLoginAttempts lockUntil password firstName lastName email"
     );
-    if (!user) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.USER_NOT_FOUND);
+    if (!user) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.INVALID_CREDENTIALS);
 
     if (user.emailVerified === false)
         throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.EMAIL_NOT_VERIFIED);
@@ -41,8 +42,14 @@ module.exports = async (userData) => {
     // masking the password before sending the user data in response
     user.password = undefined;
 
-    const membership = await Membership.findOne({ userId: user._id });
+    const membership = await Membership.findOne({ userId: user._id }).lean();
+
+    const business = await Business.findById(membership.businessId).lean();
     const accessToken = await user.generateAccessToken(membership);
     const refreshToken = await user.generateRefreshToken(membership);
-    return { user, accessToken, refreshToken };
+
+    // Saving the refreshToken
+    await user.updateOne({ refreshToken: refreshToken });
+    
+    return { user, accessToken, refreshToken , business};
 };

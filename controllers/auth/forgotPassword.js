@@ -13,6 +13,8 @@ module.exports = async (email) => {
     const { rawToken, hashedToken } = generateRandomToken();
     user.resetToken = hashedToken;
     user.resetTokenExpiry = Date.now() + constants.RESET_TOKEN_EXPIRY;
+    if (user.failedLoginAttempts) user.failedLoginAttempts = undefined;
+    if (user.lockUntil) user.lockUntil = undefined;
     await user.save();
 
     // Sending the reset password email

@@ -2,6 +2,8 @@ const authValidator = require("../validators/authValidator");
 const validate = require("../middlewares/validate");
 const asyncHandler = require("../utils/asyncHandler");
 const authentication = require("../middlewares/authentication.js");
+const createHttpError = require("http-errors");
+const { STATUS_CODES, ERROR_MESSAGES } = require("../constants/errorConstants.js");
 const router = require("express").Router();
 
 router.post(
@@ -41,7 +43,9 @@ router.post(
 router.post(
     "/refresh",
     asyncHandler(async function _refresh(req, res, next) {
-        const data = await require("../controllers/auth/refreshToken")(req.cookies.refreshToken);
+        const token = req.cookies.refreshToken || req.body.refreshToken
+        if (!token) throw new createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.TOKEN_NOT_FOUND)
+        const data = await require("../controllers/auth/refreshToken")(token);
         res.cookie("accessToken", data.accessToken, ACCESS_TOKEN_OPTIONS).success({
             data,
             message: "Access token refreshed successfully"
@@ -68,10 +72,11 @@ router.post(
 );
 
 router.use(authentication);
+
 router.post(
     "/logout",
     asyncHandler(async function _logout(req, res, next) {
-        await require("../controllers/auth/logout.js")(req.user._id, req.cookies.refreshToken);
+        await require("../controllers/auth/logout.js")(req.user._id);
         res.clearCookie("refreshToken", REFRESH_TOKEN_OPTIONS)
             .clearCookie("accessToken", ACCESS_TOKEN_OPTIONS)
             .success({ message: "Logout successful" });

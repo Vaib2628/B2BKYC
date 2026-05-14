@@ -8,7 +8,7 @@ const router = require("express").Router();
 
 router.post(
     "/",
-    validate(businessValidator.createBusiness),
+    validate(businessValidator.registerBusiness),
     asyncHandler(async function _createBusiness(req, res, next) {
         const data = await require("../controllers/businesses/createBusiness")(req.body);
         res.success({ data, message: "Business created successfully", statusCode: 201 });
@@ -30,6 +30,5 @@ router.get("/", requirePermission("GET_BUSINESSES") , asyncHandler(async functio
     const data = await require("../controllers/businesses/getBusinesses.js")(req.query);
     res.success({ data, message: "Businesses retrieved successfully" });
 }));
-
 
 module.exports = router;

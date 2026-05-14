@@ -27,7 +27,15 @@ const businessSchema = new mongoose.Schema(
         },
         kycStatus: {
             type: String,
-            enum: ["DRAFT", "UNDER_REVIEW", "VERIFIED", "REJECTED"],
+            enum: [
+                "DRAFT",
+                "PENDING_DOCUMENTS",
+                "UNDER_REVIEW",
+                "PARTIALLY_VERIFIED",
+                "VERIFIED",
+                "REJECTED",
+                "REQUIRES_RENEWAL"
+            ],
             default: "DRAFT"
         },
         trustScore: { type: Number, default: 0, min: 0, max: 100 },
