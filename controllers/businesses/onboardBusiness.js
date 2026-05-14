@@ -9,11 +9,7 @@ const generateRandomToken = require("../../utils/generateRandomToken");
 module.exports = async (businessData) => {
     // Check if CIN, PAN, or GST already exists
     const existingBusiness = await Business.findOne({
-        $or: [
-            { cinNumber: businessData.cinNumber },
-            { panNumber: businessData.panNumber },
-            { gstNumber: businessData.gstNumber }
-        ]
+        $or: [{ cinNumber: businessData.cinNumber }]
     });
     if (existingBusiness) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.BUSINESS_ALREADY_EXISTS);
 

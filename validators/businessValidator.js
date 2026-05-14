@@ -44,16 +44,6 @@ module.exports = {
             .withMessage("Primary contact number is required")
             .isMobilePhone("en-IN")
             .withMessage("Primary contact number must be a valid 10-digit Indian mobile number"),
-        body("panNumber")
-            .notEmpty()
-            .withMessage("PAN number is required")
-            .matches(/^[A-Z]{5}\d{4}[A-Z]$/)
-            .withMessage("PAN number must be in valid format"),
-        body("gstNumber")
-            .notEmpty()
-            .withMessage("GST number is required")
-            .matches(/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/)
-            .withMessage("GST number must be in valid format"),
         body("registeredAddress.line1").notEmpty().withMessage("Registered address line 1 is required"),
         body("registeredAddress.city").notEmpty().withMessage("Registered address city is required"),
         body("registeredAddress.state").notEmpty().withMessage("Registered address state is required"),

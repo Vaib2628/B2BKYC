@@ -8,7 +8,7 @@ const Business = require("../../models/Business");
 module.exports = async (userData) => {
     const user = await User.findOne(
         { email: userData.email },
-        "failedLoginAttempts lockUntil password firstName lastName email"
+        "failedLoginAttempts lockUntil password firstName lastName email emailVerified"
     );
     if (!user) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.INVALID_CREDENTIALS);
 
