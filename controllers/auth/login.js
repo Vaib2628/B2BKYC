@@ -44,12 +44,11 @@ module.exports = async (userData) => {
 
     const membership = await Membership.findOne({ userId: user._id }).lean();
 
-    const business = await Business.findById(membership.businessId).lean();
     const accessToken = await user.generateAccessToken(membership);
     const refreshToken = await user.generateRefreshToken(membership);
 
     // Saving the refreshToken
     await user.updateOne({ refreshToken: refreshToken });
-    
-    return { user, accessToken, refreshToken , business};
+
+    return { accessToken, refreshToken };
 };

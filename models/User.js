@@ -1,6 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const constants = require("../constants/constants");
 
 const userSchema = new mongoose.Schema(
     {
@@ -38,7 +39,7 @@ userSchema.methods.generateAccessToken = function (membership) {
             roleId: membership.roleId
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "1d" }
+        { expiresIn: constants.ACCESS_TOKEN_EXPIRY }
     );
 };
 
@@ -51,7 +52,7 @@ userSchema.methods.generateRefreshToken = function (membership) {
             roleId: membership.roleId
         },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: "10d" }
+        { expiresIn: constants.REFRESH_TOKEN_EXPIRY }
     );
 };
 
