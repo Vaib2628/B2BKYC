@@ -73,7 +73,7 @@ router.post(
 
 router.use(authentication);
 
-router.post(
+router.get(
     "/me",
     asyncHandler(async function _profileMe(req, res, next) {
         const data = await require("../controllers/auth/profile-me.js")(req.user);
