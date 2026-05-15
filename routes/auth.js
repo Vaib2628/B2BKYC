@@ -20,7 +20,8 @@ router.post(
     validate(authValidator.loginValidation),
     asyncHandler(async function _login(req, res, next) {
         const data = await require("../controllers/auth/login")(req.body);
-        return res.cookie("refreshToken", data.refreshToken, REFRESH_TOKEN_OPTIONS)
+        return res
+            .cookie("refreshToken", data.refreshToken, REFRESH_TOKEN_OPTIONS)
             .cookie("accessToken", data.accessToken, ACCESS_TOKEN_OPTIONS)
             .success({
                 data,
@@ -89,6 +90,16 @@ router.post(
             .clearCookie("refreshToken", REFRESH_TOKEN_OPTIONS)
             .clearCookie("accessToken", ACCESS_TOKEN_OPTIONS)
             .success({ message: "Logout successful" });
+    })
+);
+
+router.post(
+    "/change-password",
+    validate(authValidator.changePasswordValidation),
+    asyncHandler(async function _changePassword(req, res, next) {
+        const updatedBody = { user: req.user, ...req.body };
+        const data = await require("../controllers/auth/change-password.js")(updatedBody);
+        return res.success({ data, message: "Password Resetted Successfully." });
     })
 );
 
