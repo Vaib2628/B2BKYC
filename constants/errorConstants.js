@@ -23,7 +23,8 @@ module.exports = {
         TOKEN_NOT_FOUND: "Unauthorized request, Token not found or expired may be",
         MEMBERSHIP_NOT_FOUND: "Membership not found.",
 
-        UNAUTHORIZED: "Unauthenticated request."
+        INVALID_CURRENT_PASSWORD : "Current Password is not valid",
+        UNAUTHORIZED: "Unauthenticated access."
 
     }
 };

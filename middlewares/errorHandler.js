@@ -12,15 +12,14 @@ function errorHandler(err, req, res, next) {
     // Helpful for debugging in development and also for logging errors in production
     console.log({
         message: err.message,
-        stack : err.stack,
+        stack: err.stack,
         url: req.originalUrl,
         method: req.method
-    })
+    });
 
-    const isDev = process.env.NODE_ENV === "development";
     return res.status(statusCode).json({
         success: false,
-        message: err.message || "Internal Server Error",
+        message: err.message || "Internal Server Error"
     });
 }
 

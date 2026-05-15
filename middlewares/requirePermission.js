@@ -14,7 +14,7 @@ const requirePermission = (permissionKey) => {
                 status: "ACTIVE"
             });
             if (!membership) {
-                throw new createHttpError.Forbidden("User does not have access to this business")
+                throw new createHttpError.Forbidden("User does not have access to this business");
             }
 
             const role = await Role.findById(membership.roleId);
@@ -32,14 +32,14 @@ const requirePermission = (permissionKey) => {
             const hasPermission = permissions.includes(permissionKey);
 
             if (!hasPermission) {
-                throw new createHttpError.Forbidden("User does not have the required permission")
+                throw new createHttpError.Forbidden("User does not have the required permission");
             }
 
             req.permissions = permissions;
             next();
         } catch (error) {
             console.error("RBAC Error:", error);
-            next(createHttpError.InternalServerError("Failed to verify permissions"));
+            if (!res.headersSent) next(createHttpError.InternalServerError("Failed to verify permissions"));
         }
     };
 };
