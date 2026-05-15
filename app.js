@@ -10,7 +10,8 @@ var indexRouter = require("./routes/index");
 var app = express();
 app.use(
     cors({
-        origin: "*"
+        origin: ["http://localhost:5173", "http://192.168.100.79:5173"],
+        credentials: true
     })
 );
 
