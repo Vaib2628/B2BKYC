@@ -24,7 +24,7 @@ module.exports = {
         MEMBERSHIP_NOT_FOUND: "Membership not found.",
 
         INVALID_CURRENT_PASSWORD : "Current Password is not valid",
-        UNAUTHORIZED: "Unauthenticated access."
-
+        UNAUTHORIZED: "Unauthenticated access.",
+        UPLOAD_FILE: "Please upload a file"
     }
 };

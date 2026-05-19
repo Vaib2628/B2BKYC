@@ -20,8 +20,29 @@ const kycDocumentSchema = new mongoose.Schema({
     rejectionReason: { type: String, required: true },
     verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
     verifiedAt: { type: Date },
+    ocrDetails: {
+        extractedData: {
+            type: Object,
+            default: {}
+        },
+        rawText: {
+            type: String,
+            default: null
+        }
+    },
+    documentValidity: {
+        expiresAt: {
+            type: Date,
+            default: null
+        },
+
+        isLifetimeValid: {
+            type: Boolean,
+            default: false
+        }
+    },
     version: { type: Number, default: 1 },
     replaceDocumentId: { type: mongoose.Schema.Types.ObjectId, ref: "kycdocument", default: null }
 });
 
-module.exports = mongoose.model("kycdocument", kycDocumentSchema)
+module.exports = mongoose.model("kycdocument", kycDocumentSchema);

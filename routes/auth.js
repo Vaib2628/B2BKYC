@@ -93,10 +93,7 @@ router.post(
     })
 );
 
-router.post(
-    "/change-password",
-    validate(authValidator.changePasswordValidation),
-    asyncHandler(async function _changePassword(req, res, next) {
+router.post( "/change-password", validate(authValidator.changePasswordValidation),asyncHandler(async function _changePassword(req, res, next) {
         const updatedBody = { user: req.user, ...req.body };
         const data = await require("../controllers/auth/change-password.js")(updatedBody);
         return res.success({ data, message: "Password Resetted Successfully." });

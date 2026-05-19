@@ -9,8 +9,6 @@ module.exports = async (refreshToken) => {
     if (!decoded) throw new createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.INVALID_REFRESH_TOKEN);
 
     const user = await User.findById(decoded._id);
-    console.log("received token", refreshToken)
-    console.log("fetched token", user.refreshToken)
     if (!user || user.refreshToken !== refreshToken)
         throw new createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.INVALID_REFRESH_TOKEN);
 
