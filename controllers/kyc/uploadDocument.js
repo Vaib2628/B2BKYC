@@ -19,7 +19,8 @@ module.exports = async ({ file, type, user }) => {
         fileUrl: file.path,
         fileSize: file.size,
         mimeType: file.mimetype,
-        uploadedBy: user._id
+        uploadedBy: user._id,
+        expiresAt: response.data.expiresAt
     }) 
     return {
         extractedData: response.data,

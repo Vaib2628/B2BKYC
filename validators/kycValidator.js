@@ -11,5 +11,10 @@ module.exports = {
         body("type")
             .isIn(["GST_CERTIFICATE", "PAN_CARD", "INCORPORATION_CERTIFICATE", "BANK_PROOF"])
             .withMessage("Invalid type value .")
+    ],
+
+    createDocumentValidation: [
+        body("temporaryUploadId").isMongoId().withMessage("Temporary upload id is required."),
+        body("metaData").isObject().withMessage("Meta data is required for the submission")
     ]
 };

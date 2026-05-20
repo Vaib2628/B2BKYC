@@ -9,6 +9,7 @@ const temporaryUploadSchema = new mongoose.Schema(
             enum: ["GST_CERTIFICATE", "PAN_CARD", "INCORPORATION_CERTIFICATE", "BANK_PROOF"],
             required: true
         },
+        expiresAt: { type: Date, default: null },
         fileName: { type: String, required: true },
         fileUrl: { type: String, required: true },
         fileSize: { type: Number },

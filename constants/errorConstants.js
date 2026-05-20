@@ -10,6 +10,8 @@ module.exports = {
     },
 
     ERROR_MESSAGES: {
+        UPLOAD_NOT_FOUND: "Upload not found",
+        DOC_UNDER_REVIEW: "Document already under review",
         BUSINESS_ALREADY_EXISTS: "A business with the same CIN, PAN, or GST number already exists.",
         BUSINESS_NOT_FOUND: "No business found with given details",
         USER_NOT_FOUND: "User not found.",
@@ -25,6 +27,8 @@ module.exports = {
 
         INVALID_CURRENT_PASSWORD : "Current Password is not valid",
         UNAUTHORIZED: "Unauthenticated access.",
-        UPLOAD_FILE: "Please upload a file"
+        UPLOAD_FILE: "Please upload a file",
+        ACCESS_NOT_ALLOWED: "Not allowed to access this resource",
+        UPLOAD_ALREADY_PROCESSED: "Upload has been already processed."
     }
 };
