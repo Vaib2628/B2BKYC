@@ -20,10 +20,12 @@ module.exports = async ({ user, temporaryUploadId, metaData }) => {
         isActive: true
     });
 
-    if (existingDoc?.status === "PENDING")
-        throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.DOC_UNDER_REVIEW);
+    // if (existingDoc?.status === "PENDING")
+    //     throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.DOC_UNDER_REVIEW);
 
-    existingDoc && (await existingDoc.updateOne({ isActive: false }));
+    if (existingDoc && existingDoc?.status !== "VERIFIED") {
+        await existingDoc.updateOne({ isActive: false });
+    }
 
     const kycDocument = await KycDocument.create({
         businessId: temporaryUpload.businessId,
@@ -51,6 +53,6 @@ module.exports = async ({ user, temporaryUploadId, metaData }) => {
     if (uploadedDocsCount < 4)
         await Business.findByIdAndUpdate(temporaryUpload.businessId, { kycStatus: "PENDING_DOCUMENTS" });
     else await Business.findByIdAndUpdate(temporaryUpload.businessId, { kycStatus: "UNDER_REVIEW" });
-    
+
     return { _id: kycDocument._id };
 };

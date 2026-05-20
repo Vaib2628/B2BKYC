@@ -10,6 +10,7 @@ module.exports = {
     },
 
     ERROR_MESSAGES: {
+        DOC_NOT_FOUND: "Document not found",
         UPLOAD_NOT_FOUND: "Upload not found",
         DOC_UNDER_REVIEW: "Document already under review",
         BUSINESS_ALREADY_EXISTS: "A business with the same CIN, PAN, or GST number already exists.",
