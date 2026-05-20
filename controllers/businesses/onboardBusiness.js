@@ -7,9 +7,9 @@ const constants = require("../../constants/constants");
 const sendVerificationMail = require("../../utils/sendVerificationMail");
 const generateRandomToken = require("../../utils/generateRandomToken");
 module.exports = async (businessData) => {
-    // Check if CIN, PAN, or GST already exists
+    // Check if the business exists with the given name 
     const existingBusiness = await Business.findOne({
-        $or: [{ cinNumber: businessData.cinNumber }]
+        businessName: businessData.businessName
     });
     if (existingBusiness) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.BUSINESS_ALREADY_EXISTS);
 
@@ -35,7 +35,6 @@ module.exports = async (businessData) => {
     // Send verification email
     const sendMail = require("../../services/sendMail");
     const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${rawToken}`;
-    console.log(rawToken);
     await sendVerificationMail({
         to: user.email,
         token: rawToken,
@@ -44,14 +43,8 @@ module.exports = async (businessData) => {
 
     // Create new business
     const business = new Business({
-        legalName: businessData.legalName,
-        companyType: businessData.companyType,
         industry: businessData.industry,
-        cinNumber: businessData.cinNumber,
-        panNumber: businessData.panNumber,
-        gstNumber: businessData.gstNumber,
         registeredPhone: businessData.primaryContactNumber,
-        registeredAddress: businessData.registeredAddress,
         primaryOwnerId: user._id
     });
     await business.save();

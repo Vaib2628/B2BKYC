@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 
 const businessSchema = new mongoose.Schema(
     {
-        legalName: { type: String, required: true, trim: true },
+        businessName: {type: String, required: true, trim: true},
+        legalName: { type: String, trim: true },
         tradeName: { type: String, trim: true },
         companyType: {
             type: String,
             enum: ["PRIVATE_LIMITED", "PUBLIC_LIMITED", "LLP", "PARTNERSHIP", "SOLE_PROPRIETORSHIP", "OTHER"],
-            required: true
         },
         industry: { type: String, required: true },
         gstNumber: { type: String, unique: true, sparse: true },
@@ -37,6 +37,12 @@ const businessSchema = new mongoose.Schema(
                 "REQUIRES_RENEWAL"
             ],
             default: "DRAFT"
+        },
+        bankDetails: {
+            accountHolderName: String,
+            accountNumber: String,
+            ifscCode: String,
+            accountType: String
         },
         trustScore: { type: Number, default: 0, min: 0, max: 100 },
         status: {

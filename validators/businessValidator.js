@@ -27,32 +27,33 @@ const { body } = require("express-validator");
 
 module.exports = {
     onboardBusiness: [
-        body("legalName").notEmpty().withMessage("Legal name is required"),
-        body("companyType")
-            .notEmpty()
-            .withMessage("Company type is required")
-            .isIn(["PRIVATE_LIMITED", "PUBLIC_LIMITED", "LLP", "PARTNERSHIP", "SOLE_PROPRIETORSHIP", "OTHER"])
-            .withMessage("Invalid company type"),
-        body("industry").notEmpty().withMessage("Industry is required"),
-        body("cinNumber")
-            .notEmpty()
-            .withMessage("CIN number is required")
+        // body("legalName").notEmpty().withMessage("Legal name is required"),
+        // body("companyType")
+        //     .notEmpty()
+        //     .withMessage("Company type is required")
+        //     .isIn(["PRIVATE_LIMITED", "PUBLIC_LIMITED", "LLP", "PARTNERSHIP", "SOLE_PROPRIETORSHIP", "OTHER"])
+        //     .withMessage("Invalid company type"),
+        body("businessName").trim().notEmpty().withMessage("Business name is required"),
+        body("industry").trim().notEmpty().withMessage("Industry is required"),
+        // body("cinNumber")
+            // .notEmpty()
+            // .withMessage("CIN number is required")
             // .matches(/^U\d{5}[A-Z]{2}\d{4}PTC\d{6}$/)
-            .withMessage("CIN number must be in valid format"),
+            // .withMessage("CIN number must be in valid format"),
         body("primaryContactNumber")
             .notEmpty()
             .withMessage("Primary contact number is required")
             .isMobilePhone("en-IN")
             .withMessage("Primary contact number must be a valid 10-digit Indian mobile number"),
-        body("registeredAddress.line1").notEmpty().withMessage("Registered address line 1 is required"),
-        body("registeredAddress.city").notEmpty().withMessage("Registered address city is required"),
-        body("registeredAddress.state").notEmpty().withMessage("Registered address state is required"),
-        body("registeredAddress.country").notEmpty().withMessage("Registered address country is required"),
-        body("registeredAddress.pincode")
-            .notEmpty()
-            .withMessage("Registered address pincode is required")
-            .isPostalCode("IN")
-            .withMessage("Registered address pincode must be a valid 6-digit Indian postal code"),
+        // body("registeredAddress.line1").notEmpty().withMessage("Registered address line 1 is required"),
+        // body("registeredAddress.city").notEmpty().withMessage("Registered address city is required"),
+        // body("registeredAddress.state").notEmpty().withMessage("Registered address state is required"),
+        // body("registeredAddress.country").notEmpty().withMessage("Registered address country is required"),
+        // body("registeredAddress.pincode")
+        //     .notEmpty()
+        //     .withMessage("Registered address pincode is required")
+        //     .isPostalCode("IN")
+        //     .withMessage("Registered address pincode must be a valid 6-digit Indian postal code"),
         body("firstName").notEmpty().withMessage("First name is required"),
         body("lastName").notEmpty().withMessage("Last name is required"),
         body("email")
@@ -77,6 +78,7 @@ module.exports = {
     ],
 
     registerBusiness: [
+        body("businessName").trim().notEmpty().withMessage("Business name is required"),
         body("legalName").notEmpty().withMessage("Legal name is required"),
         body("companyType")
             .notEmpty()
