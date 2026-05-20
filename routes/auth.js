@@ -26,8 +26,7 @@ router.post(
             .success({
                 data,
                 message: "Login successful"
-            })
-            .success({ data, message: "Login successful" });
+            });
     })
 );
 
@@ -40,7 +39,6 @@ router.post(
     })
 );
 
-// Refresh access token
 router.post(
     "/refresh",
     asyncHandler(async function _refresh(req, res, next) {
