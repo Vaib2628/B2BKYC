@@ -26,7 +26,7 @@ router.get(
 router.get(
     "/documents/:documentId",
     asyncHandler(async function _getDocumentById(req, res, next) {
-        const updatedBody = { documentId: req.params.documentId, ...req.body };
+        const updatedBody = { documentId: req.params.documentId, user: req.user };
         const data = await require("../controllers/kyc/getDocumentById.js")(updatedBody);
         return res.success({ data });
     })
@@ -50,15 +50,6 @@ router.post(
         const updatedBody = { user: req.user, ...req.body };
         const data = await require("../controllers/kyc/createDocument.js")(updatedBody);
         return res.success({ statusCode: 201, data });
-    })
-);
-
-router.post(
-    "/documents/:documentId/reupload",
-    asyncHandler(async function _reuploadDocument(req, res, next) {
-        const updatedBody = { documentId: req.params.documentId, ...req.body };
-        const data = await require("../controllers/kyc/reuploadDocument.js")(updatedBody);
-        return res.success({ data, statusCode: 201 });
     })
 );
 
