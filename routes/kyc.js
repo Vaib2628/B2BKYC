@@ -18,7 +18,7 @@ router.get(
 router.get(
     "/documents",
     asyncHandler(async function _getDocuments(req, res, next) {
-        const data = await require("../controllers/kyc/getKycDocuments.js")(req.body.businessId);
+        const data = await require("../controllers/kyc/getKycDocuments.js")(req.user);
         return res.success({ data });
     })
 );
