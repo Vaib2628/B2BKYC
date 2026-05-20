@@ -29,6 +29,7 @@ module.exports = async ({ file, type }) => {
             "documentType": "",
             "isExpectedDocument": false,
             "reason": "",
+            "expiresAt": ""
             "data": {
                 "legalName": "",
                 "tradeName": "",
@@ -40,10 +41,6 @@ module.exports = async ({ file, type }) => {
                 "city": "",
                 "state": "",
                 "pincode": ""
-                },
-                "documentValidity": {
-                "expiresAt": null,
-                "isLifetimeValid": false
                 }
             }
             }
@@ -95,7 +92,8 @@ module.exports = async ({ file, type }) => {
             "data": {
                 "legalName": "",
                 "panNumber": ""
-            }
+            },
+            "expiresAt": ""
             }
 
             Rules:
@@ -142,7 +140,8 @@ module.exports = async ({ file, type }) => {
                 "legalName": "",
                 "cinNumber": "",
                 "dateOfIncorporation": ""
-            }
+            },
+            "expiresAt": ""
             }
 
             Rules:
@@ -196,7 +195,8 @@ module.exports = async ({ file, type }) => {
                 "accountNumber": "",
                 "ifscCode": "",
                 "accountType": ""
-            }
+            },
+            "expiresAt": ""
             }
 
             Rules:
@@ -228,7 +228,7 @@ module.exports = async ({ file, type }) => {
     }
 
     const response = await ai.models.generateContent({
-        model: "gemini-3.1-flash-lite",
+        model: "gemini-2.5-flash-lite",
         contents: [
             {
                 inlineData: {

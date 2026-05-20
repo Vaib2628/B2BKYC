@@ -7,41 +7,30 @@ const kycDocumentSchema = new mongoose.Schema({
         enum: ["GST_CERTIFICATE", "PAN_CARD", "INCORPORATION_CERTIFICATE", "BANK_PROOF"],
         required: true
     },
-    uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
-    documentNumber: { type: Number, required: true },
     fileName: { type: String, required: true },
     fileUrl: { type: String, required: true },
     fileSize: { type: Number },
     status: {
         type: String,
         enum: ["PENDING", "VERIFIED", "REJECTED"],
-        required: true
+        required: true,
+        default: "PENDING"
     },
-    rejectionReason: { type: String, required: true },
-    verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
+    rejectionReason: { type: String },
+    verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
     verifiedAt: { type: Date },
-    ocrDetails: {
-        extractedData: {
-            type: Object,
-            default: {}
-        },
-        rawText: {
-            type: String,
-            default: null
-        }
+    ocrExtractedData: {
+        type: Object,
+        default: {}
     },
-    documentValidity: {
-        expiresAt: {
-            type: Date,
-            default: null
-        },
-
-        isLifetimeValid: {
-            type: Boolean,
-            default: false
-        }
+    metaData: {
+        type: Object,
+        default: {}
     },
+    expiresAt: { type: Date, default: null },
     version: { type: Number, default: 1 },
+    uploadedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
+    isActive: { type: Boolean, default: true },
     replaceDocumentId: { type: mongoose.Schema.Types.ObjectId, ref: "kycdocument", default: null }
 });
 
