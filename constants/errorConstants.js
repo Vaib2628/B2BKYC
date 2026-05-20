@@ -10,10 +10,11 @@ module.exports = {
     },
 
     ERROR_MESSAGES: {
+        DOC_ALREADY_PROCESSED: "Document has been already proceeded.",
         DOC_NOT_FOUND: "Document not found",
         UPLOAD_NOT_FOUND: "Upload not found",
         DOC_UNDER_REVIEW: "Document already under review",
-        BUSINESS_ALREADY_EXISTS: "A business with the same CIN, PAN, or GST number already exists.",
+        BUSINESS_ALREADY_EXISTS: "A business with the same name public name already exists.",
         BUSINESS_NOT_FOUND: "No business found with given details",
         USER_NOT_FOUND: "User not found.",
         ACCOUNT_LOCKED: "Account locked due to multiple failed login attempts. Please try again after 24 hours.",

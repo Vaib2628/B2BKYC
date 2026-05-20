@@ -62,4 +62,14 @@ router.delete(
     })
 );
 
+// admin only 
+router.patch(
+    "/documents/:documentId/verify",
+    asyncHandler(async function _verifyDocument(req, res, next) {
+        const updatedBody = { documentId: req.params.documentId, user: req.user, ...req.body };
+        const data = await require("../controllers/kyc/verifyDocument.js")(updatedBody);
+        return res.success({ data });
+    })
+);
+
 module.exports = router;
