@@ -49,7 +49,7 @@ userSchema.methods.generateRefreshToken = function (membership) {
         {
             _id: this._id,
             membershipId: membership._id,
-            roleId: membership.roleId,
+            roleId: membership.roleId
             ...(membership.businessId && { businessId: membership.businessId }),
         },
         process.env.REFRESH_TOKEN_SECRET,
