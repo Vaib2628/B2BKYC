@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
 
         const membership = await Membership.findOne({
             userId: decoded._id,
-            businessId: decoded.businessId,
+            scope: decoded.scope,
             status: "ACTIVE"
         });
         if (!membership) return next(createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.UNAUTHORIZED));

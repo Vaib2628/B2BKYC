@@ -54,7 +54,7 @@ module.exports = async (businessData) => {
     const role = await Role.create({
         name: "Admin",
         description: "Admin role for the business",
-        type: "BUSINESS",
+        scope: "BUSINESS",
         businessId: business._id,
         hasFullAccess: true
     });
