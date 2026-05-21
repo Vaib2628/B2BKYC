@@ -24,7 +24,8 @@ module.exports = async (req, res, next) => {
         req.user = {
             _id: decoded._id,
             businessId: decoded.businessId,
-            membershipId: membership._id
+            membershipId: membership._id,
+            scope: membership.scope
         };
         next();
     } catch (error) {
