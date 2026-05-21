@@ -15,8 +15,8 @@ module.exports = async (req, res, next) => {
         if (!user) return next(createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.UNAUTHORIZED));
 
         const membership = await Membership.findOne({
+            _id: decoded.membershipId,
             userId: decoded._id,
-            scope: decoded.scope,
             status: "ACTIVE"
         });
         if (!membership) return next(createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.UNAUTHORIZED));
@@ -25,6 +25,7 @@ module.exports = async (req, res, next) => {
             _id: decoded._id,
             businessId: decoded.businessId,
             membershipId: membership._id,
+            roleId: membership.roleId,
             scope: membership.scope
         };
         next();

@@ -34,10 +34,7 @@ userSchema.methods.generateAccessToken = function (membership) {
     return jwt.sign(
         {
             _id: this._id,
-            membershipId: membership._id,
-            roleId: membership.roleId,
-            scope: membership.scope,
-            ...(membership.businessId && { businessId: membership.businessId }),
+            membershipId: membership._id
         },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: constants.ACCESS_TOKEN_EXPIRY }
@@ -48,10 +45,7 @@ userSchema.methods.generateRefreshToken = function (membership) {
     return jwt.sign(
         {
             _id: this._id,
-            membershipId: membership._id,
-            roleId: membership.roleId,
-            scope: membership.scope,
-            ...(membership.businessId && { businessId: membership.businessId }),
+            membershipId: membership._id
         },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: constants.REFRESH_TOKEN_EXPIRY }
