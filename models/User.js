@@ -35,7 +35,8 @@ userSchema.methods.generateAccessToken = function (membership) {
         {
             _id: this._id,
             membershipId: membership._id,
-            roleId: membership.roleId
+            roleId: membership.roleId,
+            scope: membership.scope,
             ...(membership.businessId && { businessId: membership.businessId }),
         },
         process.env.ACCESS_TOKEN_SECRET,
@@ -48,7 +49,8 @@ userSchema.methods.generateRefreshToken = function (membership) {
         {
             _id: this._id,
             membershipId: membership._id,
-            roleId: membership.roleId
+            roleId: membership.roleId,
+            scope: membership.scope,
             ...(membership.businessId && { businessId: membership.businessId }),
         },
         process.env.REFRESH_TOKEN_SECRET,
