@@ -43,8 +43,9 @@ module.exports = async (businessData) => {
 
     // Create new business
     const business = new Business({
+        businessName: businessData.businessName,
         industry: businessData.industry,
-        registeredPhone: businessData.primaryContactNumber,
+        registeredPhone: businessData.registeredPhone,
         primaryOwnerId: user._id
     });
     await business.save();
