@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 
 const businessSchema = new mongoose.Schema(
     {
-        businessName: {type: String, required: true, trim: true},
+        businessName: { type: String, required: true, trim: true },
         legalName: { type: String, trim: true },
         tradeName: { type: String, trim: true },
         companyType: {
             type: String,
-            enum: ["PRIVATE_LIMITED", "PUBLIC_LIMITED", "LLP", "PARTNERSHIP", "SOLE_PROPRIETORSHIP", "OTHER"],
+            enum: ["PRIVATE_LIMITED", "PUBLIC_LIMITED", "LLP", "PARTNERSHIP", "SOLE_PROPRIETORSHIP", "OTHER"]
         },
         industry: { type: String, required: true },
         gstNumber: { type: String, unique: true, sparse: true },
@@ -50,7 +50,7 @@ const businessSchema = new mongoose.Schema(
             enum: ["ACTIVE", "SUSPENDED", "DEACTIVATED"],
             default: "ACTIVE"
         },
-        primaryOwnerId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
+        primaryOwnerId: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true }
     },
     {
         timestamps: true
