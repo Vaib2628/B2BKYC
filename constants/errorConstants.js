@@ -11,6 +11,7 @@ module.exports = {
 
     ERROR_MESSAGES: {
         ROLE_NOT_FOUND: "Role not found",
+        PERMISSION_ALREADY_EXISTS: "Permission already exists.",
         ROLE_ALREADY_EXISTS: "Role already exists",
         DOC_ALREADY_PROCESSED: "Document has been already proceeded.",
         DOC_NOT_FOUND: "Document not found",
