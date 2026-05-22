@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const authentication = require("../middlewares/authentication.js");
+const requirePermission = require("../middlewares/requirePermission.js");
 const upload = require("../middlewares/upload.js");
 const asyncHandler = require("../utils/asyncHandler");
 const kycValidator = require("../validators/kycValidator.js");
@@ -62,12 +63,22 @@ router.delete(
     })
 );
 
-// admin only 
 router.patch(
     "/documents/:documentId/verify",
+    requirePermission(["VERIFY_DOCUMENT"], "SYSTEM"),
     asyncHandler(async function _verifyDocument(req, res, next) {
         const updatedBody = { documentId: req.params.documentId, user: req.user, ...req.body };
         const data = await require("../controllers/kyc/verifyDocument.js")(updatedBody);
+        return res.success({ data });
+    })
+);
+
+router.patch(
+    "/documents/:documentId/reject",
+    requirePermission(["REJECT_DOCUMENT"], "SYSTEM"),
+    asyncHandler(async function _rejectDocument(req, res, next) {
+        const updatedBody = { documentId: req.params.documentId, user: req.user, data: req.body };
+        const data = await require("../controllers/kyc/rejectDocument.js");
         return res.success({ data });
     })
 );

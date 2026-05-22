@@ -5,11 +5,7 @@ const Business = require("../../models/Business");
 
 module.exports = async ({ documentId, user, forceVerify }) => {
     const document = await KycDocument.findById(documentId);
-    console.log(documentId);
     if (!document) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.DOC_NOT_FOUND);
-
-    const hasScope = document.businessId.equals(user.businessId);
-    if (!hasScope) throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ACCESS_NOT_ALLOWED);
 
     const isVerifiable = document.status !== "VERIFIED";
     if (!isVerifiable) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.DOC_ALREADY_PROCESSED);
@@ -19,11 +15,7 @@ module.exports = async ({ documentId, user, forceVerify }) => {
     document.verifiedAt = new Date();
     document.isActive = true;
 
-    if (document.replaceDocumentId) {
-        await KycDocument.findByIdAndUpdate(document.replaceDocumentId, { isActive: false });
-    }
-
-    const business = await Business.findById(user.businessId);
+    const business = await Business.findById(document.businessId);
 
     // Checking for the conflicts
     let conflictFields = ["legalName", "tradeName", "companyType", "panNumber", "registeredAddress"];
@@ -35,7 +27,10 @@ module.exports = async ({ documentId, user, forceVerify }) => {
             warnings
         };
     }
-
+    if (!business.bankDetails) {
+        business.bankDetails = {};
+    }
+    
     switch (document.documentType) {
         case "GST_CERTIFICATE":
             business.gstNumber = document.metaData.gstNumber;
@@ -62,6 +57,9 @@ module.exports = async ({ documentId, user, forceVerify }) => {
     }
 
     await document.save();
+    if (document.replaceDocumentId) {
+        await KycDocument.findByIdAndUpdate(document.replaceDocumentId, { isActive: false });
+    }
 
     // calculating the verified documents count to update the status
     const verifiedDocumentsCount = await KycDocument.countDocuments({
@@ -89,12 +87,16 @@ const normalize = (value = "") =>
 const checkMismatch = (conflictFields = [], business, document) => {
     return conflictFields
         .map((field) => {
-            if (business[field] && normalize(business[field]) !== normalize(document.metaData[field])) {
+            if (
+                business[field]
+                && document.metaData[field]
+                && normalize(business[field]) !== normalize(document.metaData[field])
+            ) {
                 return {
                     field: `${field}`,
                     message: `${field} mismatch identified`
                 };
             }
         })
-        .filter((field) => field !== null);
+        .filter(Boolean);
 };
