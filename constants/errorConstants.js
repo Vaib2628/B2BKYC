@@ -10,6 +10,9 @@ module.exports = {
     },
 
     ERROR_MESSAGES: {
+        ROLE_NOT_FOUND: "Role not found",
+        PERMISSION_ALREADY_EXISTS: "Permission already exists.",
+        ROLE_ALREADY_EXISTS: "Role already exists",
         DOC_ALREADY_PROCESSED: "Document has been already proceeded.",
         DOC_NOT_FOUND: "Document not found",
         UPLOAD_NOT_FOUND: "Upload not found",
@@ -27,10 +30,13 @@ module.exports = {
         TOKEN_NOT_FOUND: "Unauthorized request, Token not found or expired may be",
         MEMBERSHIP_NOT_FOUND: "Membership not found.",
 
-        INVALID_CURRENT_PASSWORD : "Current Password is not valid",
+        INVALID_CURRENT_PASSWORD: "Current Password is not valid",
         UNAUTHORIZED: "Unauthenticated access.",
         UPLOAD_FILE: "Please upload a file",
         ACCESS_NOT_ALLOWED: "Not allowed to access this resource",
-        UPLOAD_ALREADY_PROCESSED: "Upload has been already processed."
+        UPLOAD_ALREADY_PROCESSED: "Upload has been already processed.",
+        ROLE_OUT_OF_SCOPE: "Role is out of scope",
+        SOME_PERMISSION_NOTFOUDN: "Some permissions not found",
+        SYSTEM_PERMISSION_NOT_ASSIGNABLE: "System permission can not be assigned",
     }
 };

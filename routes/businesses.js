@@ -27,7 +27,7 @@ router.use(authentication); // All routes below require authentication
 
 router.get(
     "/",
-    requirePermission("GET_BUSINESSES"),
+    requirePermission(["GET_BUSINESSES"], "SYSTEM"),
     asyncHandler(async function _getBusinesses(req, res, next) {
         const data = await require("../controllers/businesses/getBusinesses.js")(req.query);
         res.success({ data, message: "Businesses retrieved successfully" });

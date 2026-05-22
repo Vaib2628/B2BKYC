@@ -40,11 +40,11 @@ module.exports = {
             // .withMessage("CIN number is required")
             // .matches(/^U\d{5}[A-Z]{2}\d{4}PTC\d{6}$/)
             // .withMessage("CIN number must be in valid format"),
-        body("primaryContactNumber")
+        body("registeredPhone")
             .notEmpty()
-            .withMessage("Primary contact number is required")
+            .withMessage("Registered Phone number is required")
             .isMobilePhone("en-IN")
-            .withMessage("Primary contact number must be a valid 10-digit Indian mobile number"),
+            .withMessage("Registered Phone number must be a valid 10-digit Indian mobile number"),
         // body("registeredAddress.line1").notEmpty().withMessage("Registered address line 1 is required"),
         // body("registeredAddress.city").notEmpty().withMessage("Registered address city is required"),
         // body("registeredAddress.state").notEmpty().withMessage("Registered address state is required"),

@@ -2,44 +2,46 @@ const createHttpError = require("http-errors");
 const Membership = require("../models/Membership");
 const RolePermission = require("../models/RolePermission");
 const Role = require("../models/Role");
+const { STATUS_CODES, ERROR_MESSAGES } = require("../constants/errorConstants");
 
-const requirePermission = (permissionKey) => {
+const requirePermission = (permissionKeys = [], requiredScope = null) => {
     return async (req, res, next) => {
         try {
-            const { userId, businessId } = req.user;
-
             const membership = await Membership.findOne({
-                userId,
-                businessId,
+                _id: req.user.membershipId,
                 status: "ACTIVE"
             });
+
             if (!membership) {
-                throw new createHttpError.Forbidden("User does not have access to this business");
+                throw createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.MEMBERSHIP_NOT_FOUND);
+            }
+
+            if (requiredScope && membership.scope !== requiredScope) {
+                throw createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ACCESS_NOT_ALLOWED);
             }
 
             const role = await Role.findById(membership.roleId);
-            if (role && role.hasFullAccess) {
-                req.permissions = ["*"];
-                next();
-                return;
+            if (!role) {
+                throw createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.ROLE_NOT_FOUND);
+            }
+            if (role.hasFullAccess) {
+                return next();
             }
 
             const rolePermissions = await RolePermission.find({
                 roleId: membership.roleId
             }).populate("permissionId");
 
-            const permissions = rolePermissions.map((rp) => rp.permissionId.key);
-            const hasPermission = permissions.includes(permissionKey);
+            const permissions = rolePermissions.map((item) => item.permissionId.key);
+            const hasPermission = permissionKeys.some((permission) => permissions.includes(permission));
 
             if (!hasPermission) {
-                throw new createHttpError.Forbidden("User does not have the required permission");
+                throw createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ACCESS_NOT_ALLOWED);
             }
 
-            req.permissions = permissions;
             next();
         } catch (error) {
-            console.error("RBAC Error:", error);
-            if (!res.headersSent) next(createHttpError.InternalServerError("Failed to verify permissions"));
+            next(error);
         }
     };
 };
