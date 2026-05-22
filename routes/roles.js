@@ -25,7 +25,7 @@ router.post(
     asyncHandler(async function _assignPermission(req, res, next) {
         const updatedBody = { user: req.user, roleId: req.params.roleId, permissionIds: req.body.permissionIds };
         const data = await require("../controllers/roles/assingPermission.js")(updatedBody);
-        return res.success({data, statusCode: 201, message: "Permission assigned to role successfully."})
+        return res.success({ data, statusCode: 201, message: "Permission assigned to role successfully." });
     })
 );
 
@@ -37,4 +37,16 @@ router.get(
         return res.success({ data });
     })
 );
+
+router.get(
+    "/:roleId/permissions",
+    validate(roleValidator.getRolePermission),
+    requirePermission(["VIEW_ROLE_PERMISSION"]),
+    asyncHandler(async function _getRolesPermission(req, res, next) {
+        const updatedBody = { roleId: req.params.roleId, user: req.user };
+        const data = await require("../controllers/roles/getRolePermissions.js")(updatedBody);
+        return res.success({ data });
+    })
+);
+
 module.exports = router;

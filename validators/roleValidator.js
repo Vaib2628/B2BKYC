@@ -24,5 +24,7 @@ module.exports = {
         param("roleId").isMongoId().withMessage("Invalid role id"),
         body("permissionIds").isArray({ min: 1 }).withMessage("permissionIds must be a non-empty array"),
         body("permissionIds.*").isMongoId().withMessage("Invalid permission id")
-    ]
+    ],
+
+    getRolePermission: [param("roleId").isMongoId().withMessage("Invalid role id")]
 };
