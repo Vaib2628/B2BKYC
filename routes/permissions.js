@@ -19,4 +19,14 @@ router.post(
     })
 );
 
+router.get(
+    "/",
+    requirePermission(["GET_PERMISSIONS"]),
+    asyncHandler(async function _getPermissions(req, res, next) {
+        const updatedBody = { user: req.user, data: req.body };
+        const data = await require("../controllers/permissions/getPermissions.js")(updatedBody);
+        return res.success({ data });
+    })
+);
+
 module.exports = router;
