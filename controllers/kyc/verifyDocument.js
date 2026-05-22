@@ -2,6 +2,8 @@ const createHttpError = require("http-errors");
 const KycDocument = require("../../models/KycDocument");
 const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants");
 const Business = require("../../models/Business");
+const createTrustScore = require("../../services/trustscore/createTrustScore");
+const { trustHistoryEvents } = require("../../constants/constants");
 
 module.exports = async ({ documentId, user, forceVerify }) => {
     const document = await KycDocument.findById(documentId);
@@ -30,7 +32,7 @@ module.exports = async ({ documentId, user, forceVerify }) => {
     if (!business.bankDetails) {
         business.bankDetails = {};
     }
-    
+
     switch (document.documentType) {
         case "GST_CERTIFICATE":
             business.gstNumber = document.metaData.gstNumber;
@@ -72,6 +74,14 @@ module.exports = async ({ documentId, user, forceVerify }) => {
     else business.kycStatus = "PARTIALLY_VERIFIED";
 
     await business.save();
+
+    // calling the trustScore service
+    await createTrustScore({
+        businessId: business._id,
+        event: trustHistoryEvents.KYC_DOCUMENT_VERIFIED,
+        reason: "KYC document verified",
+        user
+    });
 
     return {
         _id: documentId
