@@ -27,7 +27,10 @@ const requirePermission = (permissionKeys = [], requiredScope = null) => {
             if (role.hasFullAccess) {
                 return next();
             }
-
+            if (!permissionKeys.length) {
+                return next();
+            }
+            
             const rolePermissions = await RolePermission.find({
                 roleId: membership.roleId
             }).populate("permissionId");
