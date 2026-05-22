@@ -11,8 +11,6 @@ module.exports = async ({ roleId, user }) => {
     if (role.scope === "SYSTEM" && user.scope === "BUSINESS")
         throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ROLE_OUT_OF_SCOPE);
 
-    console.log("user", user);
-    console.log("role", role);
     if (role.scope === "BUSINESS" && user.scope !== "SYSTEM" && !role.businessId.equals(user.businessId))
         throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ACCESS_NOT_ALLOWED);
 
