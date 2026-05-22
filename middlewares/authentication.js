@@ -23,7 +23,7 @@ module.exports = async (req, res, next) => {
 
         req.user = {
             _id: decoded._id,
-            businessId: decoded.businessId,
+            businessId: membership.businessId,
             membershipId: membership._id,
             roleId: membership.roleId,
             scope: membership.scope
