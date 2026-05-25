@@ -34,4 +34,12 @@ router.get(
     })
 );
 
+router.get(
+    "/counterparties",
+    requirePermission(["GET_COUNTER_PARTY"], "BUSINESS"),
+    asyncHandler(async function _getCounterParties(req, res, next) {
+        const data = await require("../controllers/businesses/getCounterParties.js")(req.user.businessId);
+        return res.success({ data });
+    })
+);
 module.exports = router;
