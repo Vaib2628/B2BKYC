@@ -36,7 +36,7 @@ module.exports = async ({ businessId, event, reason, user }) => {
         triggeredBy: user ? user._id : null
     });
 
-    business.trustScore(newTrustScore);
+    business.trustScore = newTrustScore;
     await business.save();
 
     return true;
