@@ -38,5 +38,6 @@ module.exports = {
         ROLE_OUT_OF_SCOPE: "Role is out of scope",
         SOME_PERMISSION_NOTFOUDN: "Some permissions not found",
         SYSTEM_PERMISSION_NOT_ASSIGNABLE: "System permission can not be assigned",
+        CAN_NOT_CREATE_DEAL_WITH_OWN: "Can not create the deal with own business",
     }
 };

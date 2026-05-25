@@ -27,5 +27,9 @@ module.exports = {
         KYC_DOCUMENT_REJECTED: "KYC_DOCUMENT_REJECTED",
         KYC_DOCUMENT_REUPLOADED: "KYC_DOCUMENT_REUPLOADED",
         KYC_DOCUMENT_EXPIRED: "KYC_DOCUMENT_EXPIRED"
+    },
+    
+    dealTimelineEvent: {
+        DEAL_CREATED: "DEAL_CREATED"
     }
 };

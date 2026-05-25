@@ -1,4 +1,4 @@
-const AuditLog = require("../../models/AuditLog");
+const AuditLog = require("../models/AuditLog");
 
 module.exports = async ({
     actorId = null,
