@@ -33,5 +33,6 @@ module.exports = {
         DEAL_CREATED: "DEAL_CREATED",
         DEAL_ACCEPTED: "DEAL_ACCEPTED",
         DEAL_REJECTED: "DEAL_REJECTED",
+        DEAL_UPDATED: "DEAL_UPDATED"
     }
 };

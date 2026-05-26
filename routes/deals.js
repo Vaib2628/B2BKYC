@@ -66,4 +66,14 @@ router.patch(
         return res.success({ data, message: "Deal cancelled successfully." });
     })
 );
+
+router.patch(
+    "/:id",
+    requirePermission(["UPDATE_DEAL"], "BUSINESS"),
+    asyncHandler(async function _updateDeal(req, res, next) {
+        const updatedBody = { user: req.user, dealId: req.params.id, data: req.body }
+        await require("../controllers/deals/updateDeal.js")(updatedBody);
+        return res.success({ statusCode: 204 });
+    })
+);
 module.exports = router;
