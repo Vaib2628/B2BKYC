@@ -39,5 +39,11 @@ module.exports = {
         SOME_PERMISSION_NOTFOUDN: "Some permissions not found",
         SYSTEM_PERMISSION_NOT_ASSIGNABLE: "System permission can not be assigned",
         CAN_NOT_CREATE_DEAL_WITH_OWN: "Can not create the deal with own business",
+        DEAL_NOT_FOUND: "Deal not found",
+        DEAL_ALREDY_PROCEED: "Deal has been already proceed",
+        BUSINESS_WITH_CIN_EXISTS: "Business with same CIN already exists.",
+        GST_ALREADY_LINKED: "Uploaded GST is alredy linked with another business",
+        PAN_ALREADY_LINKED: "Uploaded PAN is alredy linked with another business",
+        CIN_ALREADY_LINKED: "Uploaded CIN is alredy linked with another business",
     }
 };

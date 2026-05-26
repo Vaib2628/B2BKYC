@@ -6,8 +6,8 @@ module.exports = async ({
     businessId,
     event,
     description,
-    previousStatus = null,
-    currentStatus = null
+    previousState = null,
+    currentState = null
 }) => {
     return DealTimeline.create({
         dealId,
@@ -15,7 +15,7 @@ module.exports = async ({
         businessId,
         event,
         description,
-        previousStatus,
-        currentStatus
+        previousState,
+        currentState
     });
 };

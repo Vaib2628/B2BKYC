@@ -39,7 +39,8 @@ module.exports = async ({ user, data }) => {
         actorId: user._id,
         businessId: user.businessId,
         event: dealTimelineEvent.DEAL_CREATED,
-        description: `${business.businessName} created the ${deal.title} deal`
+        description: `${business.tradeName} created the ${deal.title} deal`,
+        currentState: "PENDING_ACCEPTANCE"
     });
 
     await createAuditLog({
@@ -47,7 +48,7 @@ module.exports = async ({ user, data }) => {
         businessId: user.businessId,
         module: "DEAL",
         action: "DEAL_ACCEPTED",
-        entityType: "Deal",
+        entityType: "deal",
         entityId: deal._id,
         description: "Deal status updated",
         previousData: {
@@ -60,4 +61,8 @@ module.exports = async ({ user, data }) => {
             referenceNumber: deal.referenceNumber
         }
     });
+
+    return {
+        dealId: deal._id
+    };
 };
