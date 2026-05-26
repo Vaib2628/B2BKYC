@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const trustScoreSchema = require("./TrustScore");
 
 const businessSchema = new mongoose.Schema(
     {
@@ -44,7 +45,7 @@ const businessSchema = new mongoose.Schema(
             ifscCode: String,
             accountType: String
         },
-        trustScore: { type: Number, default: 0, min: 0, max: 100 },
+        trustScore: { type: trustScoreSchema, default: {} },
         status: {
             type: String,
             enum: ["ACTIVE", "SUSPENDED", "DEACTIVATED"],

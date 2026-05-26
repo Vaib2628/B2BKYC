@@ -92,6 +92,14 @@ module.exports = async ({ documentId, user, forceVerify }) => {
 
     await business.save();
 
+    // calling the trustScore service
+    await createTrustScore({
+        businessId: business._id,
+        event: trustHistoryEvents.KYC_DOCUMENT_VERIFIED,
+        reason: "KYC document verified",
+        user
+    });
+
     return {
         _id: documentId
     };
