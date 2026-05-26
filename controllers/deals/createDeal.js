@@ -11,8 +11,12 @@ module.exports = async ({ user, data }) => {
     const createdByBusinessId = user.businessId;
     const business = await Business.findById(user.businessId);
 
-    const counterParty = await Business.findOne({ _id: data.counterPartyBusinessId, status: "ACTIVE" });
-    if (!counterParty) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.BUSINESS_NOT_FOUND);
+    const counterParty = await Business.findOne({
+        _id: data.counterPartyBusinessId,
+        status: "ACTIVE",
+        kycStatus: { $in: ["VERIFIED", "REQUIRES_RENEWAL"] }
+    });
+    if (!counterParty) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.COUNTERPARTY_NOT_ELIGIBLE_FOR_DEALS);
 
     const isSelf = counterParty._id.equals(user.businessId);
     if (isSelf) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.CAN_NOT_CREATE_DEAL_WITH_OWN);
@@ -47,10 +51,10 @@ module.exports = async ({ user, data }) => {
         actorId: user._id,
         businessId: user.businessId,
         module: "DEAL",
-        action: "DEAL_ACCEPTED",
+        action: "DEAL_CREATED",
         entityType: "deal",
         entityId: deal._id,
-        description: "Deal status updated",
+        description: "Deal created",
         previousData: {
             status: "DRAFT"
         },

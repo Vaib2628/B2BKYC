@@ -9,8 +9,7 @@ module.exports = async ({ user, dealId }) => {
 
     const hasScope =
         deal.counterPartyBusinessId.equals(user.businessId) || deal.createdByBusinessId.equals(user.businessId);
-
-    if (!hasScope) throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ACCESS_NOT_ALLOWED);
+    if (!hasScope) throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.DEAL_ACCESS_DENIED);
 
     const dealTimeline = await DealTimeline.find({ dealId });
 

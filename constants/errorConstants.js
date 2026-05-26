@@ -45,5 +45,13 @@ module.exports = {
         GST_ALREADY_LINKED: "Uploaded GST is alredy linked with another business",
         PAN_ALREADY_LINKED: "Uploaded PAN is alredy linked with another business",
         CIN_ALREADY_LINKED: "Uploaded CIN is alredy linked with another business",
+        COUNTERPARTY_NOT_ELIGIBLE_FOR_DEALS: "Selected business is not eligible for deals",
+        ONLY_COUNTERPARTY_CAN_ACCEPT_DEAL: "Only the counterparty business can accept this deal",
+        DEAL_ALREADY_ACCEPTED: "Deal has already been accepted",
+        ONLY_INITIATOR_CAN_CANCEL_DEAL: "Only the initiating business can cancel this deal",
+        DEAL_CANNOT_BE_CANCELLED: "Deal can no longer be cancelled",
+        DEAL_CANNOT_BE_REJECTED: "Deal can no longer be rejected",
+        DEAL_ACCESS_DENIED: "You do not have access to this deal",
+        ONLY_COUNTERPARTY_CAN_REJECT_DEAL: "Only the counterparty business can reject this deal",
     }
 };
