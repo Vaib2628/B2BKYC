@@ -37,7 +37,7 @@ router.get(
     })
 );
 
-router.post(
+router.patch(
     "/:id/accept",
     requirePermission(["ACCEPT_DEAL"], "BUSINESS"),
     asyncHandler(async function _acceptDeal(req, res, next) {
@@ -47,7 +47,7 @@ router.post(
     })
 );
 
-router.post(
+router.patch(
     "/:id/reject",
     requirePermission(["REJECT_DEAL"], "BUSINESS"),
     asyncHandler(async function _rejectDeal(req, res, next) {
@@ -57,4 +57,13 @@ router.post(
     })
 );
 
+router.patch(
+    "/:id/cancel",
+    requirePermission(["CANCEL_DEAL"], "BUSINESS"),
+    asyncHandler(async function _cancelDeal(req, res, next) {
+        const updatedBody = { user: req.user, dealId: req.params.id };
+        const data = await require("../controllers/deals/cancelDeal.js")(updatedBody);
+        return res.success({ data, message: "Deal cancelled successfully." });
+    })
+);
 module.exports = router;
