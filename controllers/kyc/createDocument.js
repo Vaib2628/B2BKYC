@@ -3,6 +3,7 @@ const TemporaryUpload = require("../../models/TemporaryUpload");
 const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants");
 const KycDocument = require("../../models/KycDocument");
 const Business = require("../../models/Business");
+const { default: mongoose } = require("mongoose");
 
 module.exports = async ({ user, temporaryUploadId, metaData }) => {
     const temporaryUpload = await TemporaryUpload.findById(temporaryUploadId);
@@ -27,6 +28,33 @@ module.exports = async ({ user, temporaryUploadId, metaData }) => {
         await existingDoc.updateOne({ isActive: false });
     }
 
+    let isExists = null;
+    switch (temporaryUpload.documentType) {
+        case "GST_CERTIFICATE":
+            isExists = await Business.findOne({
+                gstNumber: metaData.gstNumber,
+                _id: { $ne: new mongoose.Types.ObjectId(temporaryUpload.businessId) }
+            });
+            if (isExists) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.GST_ALREADY_LINKED);
+            break;
+
+        case "PAN_CARD":
+            isExists = await Business.findOne({
+                panNumber: metaData.panNumber,
+                _id: { $ne: new mongoose.Types.ObjectId(temporaryUpload.businessId) }
+            });
+            if (isExists) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.PAN_ALREADY_LINKED);
+            break;
+
+        case "INCORPORATION_CERTIFICATE":
+            isExists = await Business.findOne({
+                cinNumber: metaData.cinNumber,
+                _id: { $ne: new mongoose.Types.ObjectId(temporaryUpload.businessId) }
+            });
+            if (isExists) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.CIN_ALREADY_LINKED);
+            break;
+    }
+
     const kycDocument = await KycDocument.create({
         businessId: temporaryUpload.businessId,
         documentType: temporaryUpload.documentType,
@@ -38,7 +66,8 @@ module.exports = async ({ user, temporaryUploadId, metaData }) => {
         uploadedBy: temporaryUpload.uploadedBy,
         metaData: metaData,
         replaceDocumentId: existingDoc ? existingDoc._id : null,
-        version: existingDoc ? existingDoc.version + 1 : 1
+        version: existingDoc ? existingDoc.version + 1 : 1,
+        status: "PENDING"
     });
 
     // Marking the temporary upload as completed

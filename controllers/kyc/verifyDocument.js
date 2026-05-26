@@ -2,6 +2,9 @@ const createHttpError = require("http-errors");
 const KycDocument = require("../../models/KycDocument");
 const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants");
 const Business = require("../../models/Business");
+const createTrustScore = require("../../services/trustscore/createTrustScore");
+const { trustHistoryEvents } = require("../../constants/constants");
+const { default: mongoose } = require("mongoose");
 
 module.exports = async ({ documentId, user, forceVerify }) => {
     const document = await KycDocument.findById(documentId);
@@ -30,22 +33,38 @@ module.exports = async ({ documentId, user, forceVerify }) => {
     if (!business.bankDetails) {
         business.bankDetails = {};
     }
-    
+
+    let isExists = null;
     switch (document.documentType) {
         case "GST_CERTIFICATE":
+            isExists = await Business.findOne({
+                gstNumber: document.metaData.gstNumber,
+                _id: { $ne: document.businessId }
+            });
+            if (isExists) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.GST_ALREADY_LINKED);
             business.gstNumber = document.metaData.gstNumber;
             business.legalName = document.metaData.legalName;
-            business.panNumber = document.metaData.panNumber;
+            // business.panNumber = document.metaData.panNumber;
             business.tradeName = document.metaData.tradeName;
             business.companyType = document.metaData.companyType;
             business.registeredAddress = document.metaData.registeredAddress;
             break;
 
         case "PAN_CARD":
+            isExists = await Business.findOne({
+                panNumber: document.metaData.panNumber,
+                _id: { $ne: document.businessId }
+            });
+            if (isExists) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.PAN_ALREADY_LINKED);
             business.panNumber = document.metaData.panNumber;
             break;
 
         case "INCORPORATION_CERTIFICATE":
+            isExists = await Business.findOne({
+                cinNumber: document.metaData.cinNumber,
+                _id: { $ne: document.businessId }
+            });
+            if (isExists) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.CIN_ALREADY_LINKED);
             business.cinNumber = document.metaData.cinNumber;
             break;
 
