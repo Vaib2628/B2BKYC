@@ -22,8 +22,8 @@ module.exports = async ({ user, dealId }) => {
         dealId,
         actorId: user._id,
         businessId: deal.counterPartyBusinessId,
-        currentStatus: "DRAFT",
-        previousStatus: "PENDING_ACCEPTANCE",
+        currentState: "DRAFT",
+        previousState: "PENDING_ACCEPTANCE",
         event: dealTimelineEvent.DEAL_ACCEPTED,
         description: `${deal.counterPartyBusinessId.legalName} accepted the ${deal.title} deal`
     });

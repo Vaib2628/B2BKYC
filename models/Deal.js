@@ -10,10 +10,12 @@ const dealSchema = new mongoose.Schema(
         value: { type: Number, required: true },
         status: {
             type: String,
-            enum: ["DRAFT", "PENDING_ACCEPTANCE", "ACTIVE", "REJECTED", "CANCELLED", "DISPUTED"],
+            enum: ["DRAFT", "PENDING_ACCEPTANCE", "ACTIVE", "REJECTED", "CANCELLED", "DISPUTED", "COMPLETED"],
             default: "DRAFT"
         },
-        referenceNumber: { type: String, required: true, unique: true }
+        referenceNumber: { type: String, required: true, unique: true },
+        initiatorCompletedAt: {type: Date, default: null},
+        counterPartyCompletedAt: {type: Date, default: null},
     },
     { timestamps: true }
 );
