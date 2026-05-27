@@ -4,6 +4,7 @@ const asyncHandler = require("../utils/asyncHandler");
 const requirePermission = require("../middlewares/requirePermission.js");
 const validate = require("../middlewares/validate.js");
 const dealValidator = require("../validators/dealValidator.js");
+const disputeValidation = require("../validators/disputeValidator.js");
 
 router.use(authentication);
 
@@ -89,6 +90,34 @@ router.patch(
         const updatedBody = { user: req.user, dealId: req.params.id, data: req.body };
         await require("../controllers/deals/updateDeal.js")(updatedBody);
         return res.success({ statusCode: 204 });
+    })
+);
+
+router.post(
+    "/:id/disputes",
+    validate(disputeValidation.createDispute),
+    requirePermission(["CREATE_DISPUTE"], "BUSINESS"),
+    asyncHandler(async function _createDispute(req, res, next) {
+        const data = await require("../controllers/dealdisputes/createDispute.js")({
+            user: req.user,
+            dealId: req.params.id,
+            reason: req.body.reason
+        });
+        return res.success({ statusCode: 201, data, message: "Dispute raised successfully." });
+    })
+);
+
+router.post(
+    "/disputes/:id/resolve",
+    validate(disputeValidation.resolveDispute),
+    requirePermission(["RESOLVE_DISPUTE"], "BUSINESS"),
+    asyncHandler(async function _resolveDispute(req, res, next) {
+        const data = await require("../controllers/dealdisputes/resolveDispute.js")({
+            user: req.user,
+            disputedId: req.params.id,
+            resolutionNote: req.body.resolutionNote
+        });
+        return res.success({ statusCode: 201, data, message: "Dispute resolved successfully." });
     })
 );
 
