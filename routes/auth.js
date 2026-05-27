@@ -45,10 +45,13 @@ router.post(
         const token = req.cookies.refreshToken || req.body.refreshToken;
         if (!token) throw new createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.TOKEN_NOT_FOUND);
         const data = await require("../controllers/auth/refreshToken")(token);
-        return res.cookie("accessToken", data.accessToken, ACCESS_TOKEN_OPTIONS).success({
-            data,
-            message: "Access token refreshed successfully"
-        });
+        return res
+            .cookie("accessToken", data.accessToken, ACCESS_TOKEN_OPTIONS)
+            .cookie("refreshToken", data.refreshToken, REFRESH_TOKEN_OPTIONS)
+            .success({
+                data,
+                message: "Access token refreshed successfully"
+            });
     })
 );
 
@@ -91,7 +94,10 @@ router.post(
     })
 );
 
-router.post( "/change-password", validate(authValidator.changePasswordValidation),asyncHandler(async function _changePassword(req, res, next) {
+router.post(
+    "/change-password",
+    validate(authValidator.changePasswordValidation),
+    asyncHandler(async function _changePassword(req, res, next) {
         const updatedBody = { user: req.user, ...req.body };
         const data = await require("../controllers/auth/change-password.js")(updatedBody);
         return res.success({ data, message: "Password Resetted Successfully." });
