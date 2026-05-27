@@ -10,10 +10,10 @@ module.exports = async ({ user, dealId }) => {
     if (!deal) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.DEAL_NOT_FOUND);
 
     const hasScope = deal.createdByBusinessId._id.equals(user.businessId);
-    if (!hasScope) throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ACCESS_NOT_ALLOWED);
+    if (!hasScope) throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ONLY_INITIATOR_CAN_CANCEL_DEAL);
 
     if (!["DRAFT", "PENDING_ACCEPTANCE"].includes(deal.status))
-        throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.DEAL_ALREDY_PROCEED);
+        throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.DEAL_CANNOT_BE_CANCELLED);
 
     await createDealTimeline({
         dealId,
