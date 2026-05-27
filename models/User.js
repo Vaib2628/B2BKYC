@@ -42,7 +42,7 @@ userSchema.methods.generateAccessToken = function (membership) {
 };
 
 userSchema.methods.generateRefreshToken = function (membership) {
-    return jwt.sign(
+    const token = jwt.sign(
         {
             _id: this._id,
             membershipId: membership._id
@@ -50,6 +50,8 @@ userSchema.methods.generateRefreshToken = function (membership) {
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: constants.REFRESH_TOKEN_EXPIRY }
     );
+    this.refreshToken = token;
+    return token;
 };
 
 module.exports = mongoose.model("user", userSchema);

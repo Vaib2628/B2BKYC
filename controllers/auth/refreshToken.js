@@ -16,9 +16,9 @@ module.exports = async (refreshToken) => {
     if (!membership || !membership.userId.equals(user._id) || membership.status !== "ACTIVE")
         throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.MEMBERSHIP_NOT_FOUND);
 
-    const accessToken = await user.generateAccessToken(membership);
-    const newRefreshToken = await user.generateRefreshToken(membership);
-    user.refreshToken = newRefreshToken;
+    const accessToken = user.generateAccessToken(membership);
+    const newRefreshToken = user.generateRefreshToken(membership);
     await user.save({ validateBeforeSave: false });
+    
     return { accessToken, refreshToken: newRefreshToken };
 };
