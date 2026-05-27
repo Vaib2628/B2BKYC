@@ -10,10 +10,10 @@ module.exports = async ({ user, dealId }) => {
     if (!deal) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.DEAL_NOT_FOUND);
 
     const hasScope = deal.counterPartyBusinessId._id.equals(user.businessId);
-    if (!hasScope) throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ACCESS_NOT_ALLOWED);
+    if (!hasScope) throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ONLY_COUNTERPARTY_CAN_REJECT_DEAL);
 
     if (deal.status !== "PENDING_ACCEPTANCE")
-        throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.DEAL_ALREDY_PROCEED);
+        throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.DEAL_CANNOT_BE_REJECTED);
 
     deal.status = "REJECTED";
     await deal.save();

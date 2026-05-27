@@ -22,7 +22,10 @@ router.get(
     "/",
     requirePermission(["GET_DEALS"], "BUSINESS"),
     asyncHandler(async function _getDeals(req, res, next) {
-        const data = await require("../controllers/deals/getDeals.js")(req.user.businessId);
+        const data = await require("../controllers/deals/getDeals.js")({
+            businessId: req.user.businessId,
+            type: req.query.type
+        });
         return res.success({ data });
     })
 );
@@ -37,7 +40,7 @@ router.get(
     })
 );
 
-router.post(
+router.patch(
     "/:id/accept",
     requirePermission(["ACCEPT_DEAL"], "BUSINESS"),
     asyncHandler(async function _acceptDeal(req, res, next) {
@@ -47,7 +50,7 @@ router.post(
     })
 );
 
-router.post(
+router.patch(
     "/:id/reject",
     requirePermission(["REJECT_DEAL"], "BUSINESS"),
     asyncHandler(async function _rejectDeal(req, res, next) {
@@ -57,4 +60,23 @@ router.post(
     })
 );
 
+router.patch(
+    "/:id/cancel",
+    requirePermission(["CANCEL_DEAL"], "BUSINESS"),
+    asyncHandler(async function _cancelDeal(req, res, next) {
+        const updatedBody = { user: req.user, dealId: req.params.id };
+        const data = await require("../controllers/deals/cancelDeal.js")(updatedBody);
+        return res.success({ data, message: "Deal cancelled successfully." });
+    })
+);
+
+router.patch(
+    "/:id",
+    requirePermission(["UPDATE_DEAL"], "BUSINESS"),
+    asyncHandler(async function _updateDeal(req, res, next) {
+        const updatedBody = { user: req.user, dealId: req.params.id, data: req.body };
+        await require("../controllers/deals/updateDeal.js")(updatedBody);
+        return res.success({ statusCode: 204 });
+    })
+);
 module.exports = router;
