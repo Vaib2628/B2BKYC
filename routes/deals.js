@@ -71,6 +71,18 @@ router.patch(
 );
 
 router.patch(
+    "/:id/complete",
+    requirePermission(["COMPLETE_DEAL"], "BUSINESS"),
+    asyncHandler(async function _completeDeal(req, res, next) {
+        const data = await require("../controllers/deals/completeDeal.js")({
+            user: req.user,
+            dealId: req.params.id
+        });
+        return res.success({ data, message: "Deal completed" });
+    })
+);
+
+router.patch(
     "/:id",
     requirePermission(["UPDATE_DEAL"], "BUSINESS"),
     asyncHandler(async function _updateDeal(req, res, next) {
@@ -79,4 +91,5 @@ router.patch(
         return res.success({ statusCode: 204 });
     })
 );
+
 module.exports = router;
