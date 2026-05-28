@@ -5,7 +5,7 @@ const dealDisputeSchema = new mongoose.Schema(
         dealId: { type: mongoose.Schema.Types.ObjectId, ref: "deal", required: true },
         raisedByBusinessId: { type: mongoose.Schema.Types.ObjectId, ref: "business", required: true },
         raisedByUserId: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
-        resolvedBusinessId: { type: mongoose.Schema.Types.ObjectId, ref: "business" },
+        resolvedByBusinessId: { type: mongoose.Schema.Types.ObjectId, ref: "business" },
         resolvedByUserId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
         reason: { type: String, trim: true },
         resolutionNote: { type: String, trim: true },

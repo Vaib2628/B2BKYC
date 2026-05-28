@@ -114,7 +114,7 @@ router.post(
     asyncHandler(async function _resolveDispute(req, res, next) {
         const data = await require("../controllers/dealdisputes/resolveDispute.js")({
             user: req.user,
-            disputedId: req.params.id,
+            disputeId: req.params.id,
             resolutionNote: req.body.resolutionNote
         });
         return res.success({ statusCode: 201, data, message: "Dispute resolved successfully." });
