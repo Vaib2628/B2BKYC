@@ -20,6 +20,15 @@ router.post(
 );
 
 router.get(
+    "/disputes",
+    requirePermission(["VIEW_DISPUTES"], "BUSINESS"),
+    asyncHandler(async function _getDisputes(req, res, next) {
+        const data = await require("../controllers/dealdisputes/getDisputes.js")({ businessId: req.user.businessId});
+        return res.success({ data });
+    })
+);
+
+router.get(
     "/",
     requirePermission(["GET_DEALS"], "BUSINESS"),
     asyncHandler(async function _getDeals(req, res, next) {
@@ -114,7 +123,7 @@ router.post(
     asyncHandler(async function _resolveDispute(req, res, next) {
         const data = await require("../controllers/dealdisputes/resolveDispute.js")({
             user: req.user,
-            disputedId: req.params.id,
+            disputeId: req.params.id,
             resolutionNote: req.body.resolutionNote
         });
         return res.success({ statusCode: 201, data, message: "Dispute resolved successfully." });

@@ -56,6 +56,10 @@ module.exports = {
         DEAL_CANNOT_BE_DISPUTED: "Deal can no longer be disputed",
         DEAL_ACCESS_DENIED: "You do not have access to this deal",
         DEAL_ALREADY_DISPUTED: "Deal has been already disputed",
-        ONLY_COUNTERPARTY_CAN_REJECT_DEAL: "Only the counterparty business can reject this deal"
+        ONLY_COUNTERPARTY_CAN_REJECT_DEAL: "Only the counterparty business can reject this deal",
+        DISPUTE_NOT_FOUND: "Dispute not found",
+        DISPUTE_ACCESS_DENIED: "You do not have the access to this dispute",
+        INVALID_DISPUTE_RESOLVER: "The business that raised the dispute cannot resolve it",
+        DISPUTE_ALREADY_RESOLVED: "Dispute has already been resolved"
     }
 };
