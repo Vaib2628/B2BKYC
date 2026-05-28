@@ -52,7 +52,10 @@ module.exports = {
         DEAL_CANNOT_BE_CANCELLED: "Deal can no longer be cancelled",
         DEAL_CANNOT_BE_REJECTED: "Deal can no longer be rejected",
         DEAL_CANNOT_BE_UPDATED: "Deal can no longer be updated",
+        DEAL_CANNOT_BE_COMPLETED: "Deal can no longer be completed",
+        DEAL_CANNOT_BE_DISPUTED: "Deal can no longer be disputed",
         DEAL_ACCESS_DENIED: "You do not have access to this deal",
-        ONLY_COUNTERPARTY_CAN_REJECT_DEAL: "Only the counterparty business can reject this deal",
+        DEAL_ALREADY_DISPUTED: "Deal has been already disputed",
+        ONLY_COUNTERPARTY_CAN_REJECT_DEAL: "Only the counterparty business can reject this deal"
     }
 };

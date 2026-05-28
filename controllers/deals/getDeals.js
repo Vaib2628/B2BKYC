@@ -1,8 +1,23 @@
 const Deal = require("../../models/Deal");
 
 module.exports = async ({ businessId, type = "" }) => {
-    const filter = {};
+    const baseFilter = {
+        $or: [{ counterPartyBusinessId: businessId }, { createdByBusinessId: businessId }]
+    };
+    let incomingDeals = 0;
+    let activeDeals = 0;
+    let completedDeals = 0;
+    let disputedDeals = 0;
 
+    const allDeals = await Deal.find(baseFilter).lean();
+    allDeals.forEach((deal) => {
+        if (deal.counterPartyBusinessId._id.equals(businessId) && deal.status === "PENDING_ACCEPTANCE") incomingDeals++;
+        if (deal.status === "ACTIVE") activeDeals++;
+        if (deal.status === "COMPLETED") completedDeals++;
+        if (deal.status === "DISPUTED") disputedDeals++;
+    });
+
+    const filter = {};
     switch (type) {
         case "incoming":
             filter.counterPartyBusinessId = businessId;
@@ -31,8 +46,8 @@ module.exports = async ({ businessId, type = "" }) => {
             filter.status = "DISPUTED";
             break;
 
-        default:
-            filter.$or = [{ counterPartyBusinessId: businessId }, { createdByBusinessId: businessId }];
+        // default:
+        // filter.$or = [{ counterPartyBusinessId: businessId }, { createdByBusinessId: businessId }];
     }
 
     const deals = await Deal.find(filter)
@@ -40,9 +55,7 @@ module.exports = async ({ businessId, type = "" }) => {
         .populate("createdByBusinessId", "legalName tradeName")
         .lean();
 
-    console.log(deals);
-    console.log(filter);
-    return deals.map((deal) => {
+    const mappedDeals = deals.map((deal) => {
         const isCounterParty = deal.counterPartyBusinessId._id.equals(businessId);
         return {
             ...deal,
@@ -51,4 +64,14 @@ module.exports = async ({ businessId, type = "" }) => {
             canCancel: !isCounterParty && deal.status === "PENDING_ACCEPTANCE"
         };
     });
+
+    return {
+        deals: mappedDeals,
+        summary: {
+            incomingDeals,
+            activeDeals,
+            completedDeals,
+            disputedDeals
+        }
+    };
 };
