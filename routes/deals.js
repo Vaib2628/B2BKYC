@@ -20,6 +20,15 @@ router.post(
 );
 
 router.get(
+    "/disputes",
+    requirePermission(["VIEW_DISPUTES"], "BUSINESS"),
+    asyncHandler(async function _getDisputes(req, res, next) {
+        const data = await require("../controllers/dealdisputes/getDisputes.js")({ businessId: req.user.businessId});
+        return res.success({ data });
+    })
+);
+
+router.get(
     "/",
     requirePermission(["GET_DEALS"], "BUSINESS"),
     asyncHandler(async function _getDeals(req, res, next) {
