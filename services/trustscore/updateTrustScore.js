@@ -18,7 +18,7 @@ module.exports = async ({ businessId, event, reason, user }) => {
         KycDocument.find({ businessId }).lean()
     ]);
 
-    const dealBaseFilter = {
+    const dealFilter = {
         $or: [{ createdByBusinessId: businessId }, { counterPartyBusinessId: businessId }]
     };
 
@@ -53,10 +53,10 @@ module.exports = async ({ businessId, event, reason, user }) => {
     const kycScore = calculateKycScore({
         documents,
         weight: config.weights.kyc,
-        requiredDocument: config.REQUIRED_KYC_DOCUMENT
+        requiredDocuments: config.REQUIRED_KYC_DOCUMENTS
     });
     const complianceScore = calculateCompliance({ documents, weight: config.weights.compliance });
-    const activityScore = calculateActivity({ activeDeals, business, config, weight: config.weights.activity });
+    const activityScore = calculateActivity({recentActivityDeals ,activeDeals, business, config, weight: config.weights.activity });
     const dealPerformanceScore = calculateDealPerformance({
         completedDeals,
         disputesAgainst,

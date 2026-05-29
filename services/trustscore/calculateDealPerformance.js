@@ -1,3 +1,5 @@
+const normalizeScore = require("../../helpers/normalizeScore");
+
 module.exports = ({ totalDeals, completedDeals, disputesAgainst, resolvedDisputes, businessId, weight, config }) => {
     const completionRatio = completedDeals / totalDeals;
     const disputesRatio = disputesAgainst / totalDeals;
@@ -8,5 +10,9 @@ module.exports = ({ totalDeals, completedDeals, disputesAgainst, resolvedDispute
         + disputesRatio * config.disputeRatioWeight
         + resolutionRatio * config.resolutionRatioWeight;
 
-    return Math.round(score * weight);
+    console.log({completionRatio, disputesRatio, resolutionRatio})
+    return normalizeScore({
+        score: score * weight,
+        weight
+    });
 };
