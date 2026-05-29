@@ -6,7 +6,7 @@ module.exports = ({ weight, documents = [] }) => {
     const rejectedDocs = documents.filter((doc) => doc.status === "REJECTED");
     const verifiedDocs = documents.filter((doc) => doc.status === "VERIFIED");
 
-    const complianceRatio = (verifiedDocs - rejectedDocs) / documents.length;
+    const complianceRatio = (verifiedDocs.length - rejectedDocs.length) / documents.length;
 
     console.log({rejectedDocs, verifiedDocs , complianceRatio})
     return normalizeScore({
