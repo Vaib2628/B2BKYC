@@ -1,10 +1,13 @@
 const createHttpError = require("http-errors");
 const Deal = require("../../models/Deal");
+const Business = require("../../models/Business")
 const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants");
 const DealTimeline = require("../../models/DealTimeline");
 
 module.exports = async ({ user, dealId }) => {
-    const deal = await Deal.findById(dealId);
+    const deal = await Deal.findById(dealId)
+        .populate("counterPartyBusinessId", "legalName tradeName")
+        .populate("createdByBusinessId", "legalName tradeName");
     if (!deal) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.DEAL_NOT_FOUND);
 
     const hasScope =
