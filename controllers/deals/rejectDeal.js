@@ -25,7 +25,7 @@ module.exports = async ({ user, dealId }) => {
         previousState: "PENDING_ACCEPTANCE",
         currentState: "REJECTED",
         event: dealTimelineEvent.DEAL_REJECTED,
-        description: `${deal.counterPartyBusinessId.legalName} rejected the ${deal.title} deal`
+        description: `${deal.counterPartyBusinessId.legalName} rejected the deal`
     });
 
     await createAuditLog({

@@ -39,7 +39,7 @@ module.exports = async ({ user, dealId, data }) => {
         actorId: user._id,
         businessId: user.businessId,
         event: dealTimelineEvent.DEAL_UPDATED,
-        description: `${deal.createdByBusinessId.tradeName} updated the ${deal.title} deal`,
+        description: `${deal.createdByBusinessId.tradeName} updated the deal`,
         previousState: deal.status,
         currentState: deal.status
     });

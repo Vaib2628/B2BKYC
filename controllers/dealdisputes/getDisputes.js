@@ -16,6 +16,7 @@ module.exports = async ({ businessId }) => {
         })
         .populate("raisedByBusinessId", "tradeName legalName")
         .populate("resolvedByBusinessId", "tradeName legalName")
+        .populate("againstBusinessId", "tradeName legalName")
         .sort({
             createdAt: -1
         })

@@ -22,7 +22,7 @@ module.exports = async ({ user, dealId }) => {
         previousState: deal.status,
         currentState: "CANCELLED",
         event: dealTimelineEvent.DEAL_CANCELLED,
-        description: `${deal.createdByBusinessId.legalName} rejected the ${deal.title} deal`
+        description: `${deal.createdByBusinessId.legalName} rejected the deal`
     });
 
     await createAuditLog({
