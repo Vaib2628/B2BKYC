@@ -19,7 +19,7 @@ router.post(
     validate(businessValidator.onboardBusiness),
     asyncHandler(async function _onboardBusiness(req, res, next) {
         const data = await require("../controllers/businesses/onboardBusiness")(req.body);
-        res.success({ data, message: "Business onboarded successfully", statusCode: 200 });
+        res.success({ data, message: "Business Registered, Please verify mail to access the dashboard", statusCode: 200 });
     })
 );
 
