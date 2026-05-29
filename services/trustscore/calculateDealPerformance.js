@@ -1,3 +1,12 @@
-module.exports = ({deals, weight}) => {
-    return 0;
-}
+module.exports = ({ totalDeals, completedDeals, disputesAgainst, resolvedDisputes, businessId, weight, config }) => {
+    const completionRatio = completedDeals / totalDeals;
+    const disputesRatio = disputesAgainst / totalDeals;
+    const resolutionRatio = disputesAgainst ? resolvedDisputes / totalDeals : 1;
+
+    const score =
+        completionRatio * config.completionRatioWeight
+        + disputesRatio * config.disputeRatioWeight
+        + resolutionRatio * config.resolutionRatioWeight;
+
+    return Math.round(score * weight);
+};
