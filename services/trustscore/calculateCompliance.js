@@ -8,7 +8,6 @@ module.exports = ({ weight, documents = [] }) => {
 
     const complianceRatio = (verifiedDocs.length - rejectedDocs.length) / documents.length;
 
-    console.log({rejectedDocs, verifiedDocs , complianceRatio})
     return normalizeScore({
         score: complianceRatio * weight,
         weight
