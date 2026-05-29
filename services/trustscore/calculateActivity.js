@@ -1,10 +1,14 @@
-module.exports = ({ business = [], weight }) => {
-    const age = Math.floor((new Date() - new Date(business.createdAt)) / (1000 * 60 * 60 * 24));
+module.exports = ({ business, activeDeals, weight, config }) => {
     let score = 0;
-    if (age >= 30) score = weight * 0.1;
-    if (age >= 90) score = weight * 0.5;
-    if (age >= 110) score = weight * 0.8;
-    if (age > 110) score = weight;
+    if (business.status === "ACTIVE") {
+        normalizedScore += config.businessStatusRatio;
+    }
+    if (["VERIFIED", "REQUIRES_RENEWAL"].includes(business.kycStatus)) {
+        normalizedScore += config.kycStatusRatio;
+    }
 
-    return Number(score.toFixed(2));
+    const activityRatio = Math.min(recentDeals.length / config.recentDealActivityThreshold, 1);
+    normalizedScore += activityRatio * config.recentDealActivityRatio;
+
+    return Math.round(normalizedScore * weight);
 };

@@ -2,7 +2,7 @@ const createHttpError = require("http-errors");
 const KycDocument = require("../../models/KycDocument");
 const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants");
 const Business = require("../../models/Business");
-const createTrustScore = require("../../services/trustscore/createTrustScore");
+const updateTrustScore = require("../../services/trustscore/updateTrustScore");
 const { trustHistoryEvents } = require("../../constants/constants");
 const { default: mongoose } = require("mongoose");
 
@@ -44,7 +44,6 @@ module.exports = async ({ documentId, user, forceVerify }) => {
             if (isExists) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.GST_ALREADY_LINKED);
             business.gstNumber = document.metaData.gstNumber;
             business.legalName = document.metaData.legalName;
-            // business.panNumber = document.metaData.panNumber;
             business.tradeName = document.metaData.tradeName;
             business.companyType = document.metaData.companyType;
             business.registeredAddress = document.metaData.registeredAddress;
@@ -93,7 +92,7 @@ module.exports = async ({ documentId, user, forceVerify }) => {
     await business.save();
 
     // calling the trustScore service
-    await createTrustScore({
+    await updateTrustScore({
         businessId: business._id,
         event: trustHistoryEvents.KYC_DOCUMENT_VERIFIED,
         reason: "KYC document verified",

@@ -14,6 +14,19 @@ module.exports = {
             activity: 10
         },
 
+        activity: {
+            businessStatusRatio: 0.4,
+            kycStatusRatio: 0.3,
+            recentDealActivityRatio: 0.3,
+            recentDealActivityThreshold: 10
+        },
+
+        dealPerformance: {
+            completionRatioWeight: 0.6,
+            disputeRatioWeight: 0.3,
+            resolutionRatioWeight: 0.1
+        },
+
         badges: [
             { min: 90, value: "ELITE" },
             { min: 75, value: "TRUSTED" },
