@@ -12,7 +12,6 @@ module.exports = ({ business, recentActivityDeals, activeDeals, weight, config }
     const activityRatio = Math.min(recentActivityDeals / config.recentDealActivityThreshold, 1);
     score += activityRatio * config.recentDealActivityRatio;
 
-    console.log({activityRatio})
     return normalizeScore({
         score: score * weight,
         weight

@@ -14,7 +14,7 @@ const config = require("../../constants/constants").trustScoreConfig;
 
 module.exports = async ({ businessId, event, reason, user }) => {
     const [business, documents] = await Promise.all([
-        Business.findById(businessId).lean(),
+        Business.findById(businessId),
         KycDocument.find({ businessId }).lean()
     ]);
 
@@ -56,7 +56,7 @@ module.exports = async ({ businessId, event, reason, user }) => {
         requiredDocuments: config.REQUIRED_KYC_DOCUMENTS
     });
     const complianceScore = calculateCompliance({ documents, weight: config.weights.compliance });
-    const activityScore = calculateActivity({recentActivityDeals ,activeDeals, business, config, weight: config.weights.activity });
+    const activityScore = calculateActivity({recentActivityDeals ,activeDeals, business, config: config.activity, weight: config.weights.activity });
     const dealPerformanceScore = calculateDealPerformance({
         completedDeals,
         disputesAgainst,

@@ -10,7 +10,6 @@ module.exports = ({ totalDeals, completedDeals, disputesAgainst, resolvedDispute
         + disputesRatio * config.disputeRatioWeight
         + resolutionRatio * config.resolutionRatioWeight;
 
-    console.log({completionRatio, disputesRatio, resolutionRatio})
     return normalizeScore({
         score: score * weight,
         weight
