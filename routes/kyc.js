@@ -10,6 +10,7 @@ router.use(authentication);
 
 router.get(
     "/",
+    requirePermission({ permission: "kyc.read", scope: "BUSINESS" }),
     asyncHandler(async function _getKyc(req, res, next) {
         const data = await require("../controllers/kyc/getKycDetails.js")(req.user.businessId);
         return res.success({ data });
@@ -18,6 +19,7 @@ router.get(
 
 router.get(
     "/documents",
+    requirePermission({ permission: "kyc.read", scope: "BUSINESS" }),
     asyncHandler(async function _getDocuments(req, res, next) {
         const data = await require("../controllers/kyc/getKycDocuments.js")(req.user);
         return res.success({ data });
@@ -26,6 +28,7 @@ router.get(
 
 router.get(
     "/documents/:documentId",
+    requirePermission({ permission: "kyc.read", scope: "BUSINESS" }),
     asyncHandler(async function _getDocumentById(req, res, next) {
         const updatedBody = { documentId: req.params.documentId, user: req.user };
         const data = await require("../controllers/kyc/getDocumentById.js")(updatedBody);
@@ -47,6 +50,7 @@ router.post(
 router.post(
     "/documents",
     validate(kycValidator.createDocumentValidation),
+    requirePermission({ permission: "kyc.create", scope: "BUSINESS" }),
     asyncHandler(async function _createDocument(req, res, next) {
         const updatedBody = { user: req.user, ...req.body };
         const data = await require("../controllers/kyc/createDocument.js")(updatedBody);
@@ -56,16 +60,17 @@ router.post(
 
 router.delete(
     "/documents/:documentId",
+    requirePermission({ permission: "kyc.delete", scope: "BUSINESS" }),
     asyncHandler(async function _deleteDocuement(req, res, next) {
-        const updatedBody = { documentId: req.params.documentId, ...req.body };
-        await require("../controllers/kyc/deleteDocument.js")(req.body);
+        const updatedBody = { documentId: req.params.documentId, user: req.user, ...req.body };
+        await require("../controllers/kyc/deleteDocument.js")(updatedBody);
         return res.success({ statusCode: 204 });
     })
 );
 
 router.patch(
     "/documents/:documentId/verify",
-    requirePermission(["VERIFY_DOCUMENT"], "SYSTEM"),
+    requirePermission({ permission: "kyc.verify", scope: "SYSTEM" }),
     asyncHandler(async function _verifyDocument(req, res, next) {
         const updatedBody = { documentId: req.params.documentId, user: req.user, ...req.body };
         const data = await require("../controllers/kyc/verifyDocument.js")(updatedBody);
@@ -75,10 +80,10 @@ router.patch(
 
 router.patch(
     "/documents/:documentId/reject",
-    requirePermission(["REJECT_DOCUMENT"], "SYSTEM"),
+    requirePermission({ permission: "kyc.reject", scope: "SYSTEM" }),
     asyncHandler(async function _rejectDocument(req, res, next) {
         const updatedBody = { documentId: req.params.documentId, user: req.user, data: req.body };
-        const data = await require("../controllers/kyc/rejectDocument.js");
+        const data = await require("../controllers/kyc/rejectDocument.js")(updatedBody);
         return res.success({ data });
     })
 );

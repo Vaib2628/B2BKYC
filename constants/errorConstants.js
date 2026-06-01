@@ -62,6 +62,7 @@ module.exports = {
         INVALID_DISPUTE_RESOLVER: "The business that raised the dispute cannot resolve it",
         DISPUTE_ALREADY_RESOLVED: "Dispute has already been resolved",
         ACCESS_TOKEN_MISSING: "Authentication required. Access token is missing.",
-        INVALID_ACCESS_TOKEN: "Your session is invalid. Please sign in again."
+        INVALID_ACCESS_TOKEN: "Your session is invalid. Please sign in again.",
+        PERMISSION_DENIED: "You do not have permission to perform this action."
     }
 };

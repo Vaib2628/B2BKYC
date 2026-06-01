@@ -1,41 +1,48 @@
-const createHttpError = require("http-errors");
-const Role = require("../../models/Role");
-const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants");
-const Permission = require("../../models/Permission");
-const RolePermission = require("../../models/RolePermission");
+const createHttpError=require("http-errors");
+const Role=require("../../models/Role");
+const Permission=require("../../models/Permission");
+const RolePermission=require("../../models/RolePermission");
+const {STATUS_CODES,ERROR_MESSAGES}=require("../../constants/errorConstants");
 
-module.exports = async ({ user, roleId, permissionIds }) => {
-    const role = await Role.findById(roleId);
-    if (!role) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.ROLE_NOT_FOUND);
-    if (role.scope === "BUSINESS" && (!role.businessId || role.businessId !== user.businessId)) {
-        throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ROLE_OUT_OF_SCOPE);
-    }
-    // permissions - does all are of this same scope
+module.exports=async({user,roleId,permissionIds})=>{
+    const role=await Role.findById(roleId);
+    if(!role) throw new createHttpError(STATUS_CODES.NOT_FOUND,ERROR_MESSAGES.ROLE_NOT_FOUND);
 
-    const permissions = await Permission.find({ _id: { $in: permissionIds } });
-    if (permissions.length !== permissionIds.length)
-        throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.SOME_PERMISSION_NOTFOUDN);
+    if(role.scope!==user.scope)
+        throw new createHttpError(STATUS_CODES.FORBIDDEN,ERROR_MESSAGES.ROLE_OUT_OF_SCOPE);
 
-    const rolePermissions = [];
+    if(role.scope==="BUSINESS"&&(!role.businessId||!role.businessId.equals(user.businessId)))
+        throw new createHttpError(STATUS_CODES.FORBIDDEN,ERROR_MESSAGES.ROLE_OUT_OF_SCOPE);
 
-    for (const permission of permissions) {
-        if (user.scope === "BUSINESS" && permission.scope === "SYSTEM")
-            throw new createHttpError(STATUS_CODES.FORBIDDEN, `Can not assign system permission ${permission._id}`);
+    const permissions=await Permission.find({_id:{$in:permissionIds}});
+    if(permissions.length!==permissionIds.length)
+        throw new createHttpError(STATUS_CODES.NOT_FOUND,ERROR_MESSAGES.SOME_PERMISSION_NOTFOUDN);
 
-        const exists = await RolePermission.findOne({
-            permissionId: permission._id,
-            roleId: role._id
-        });
-        if (!exists) {
-            rolePermissions.push({
-                roleId: role._id,
-                permissionId: permission._id
-            });
-        }
+    for(const permission of permissions){
+        if(role.scope==="BUSINESS"&&permission.scope==="SYSTEM")
+            throw new createHttpError(STATUS_CODES.FORBIDDEN,ERROR_MESSAGES.PERMISSION_SCOPE_MISMATCH);
     }
 
-    if (rolePermissions.length > 0) await RolePermission.insertMany(rolePermissions);
-    return {
-        assignedPermissions: rolePermissions.length
+    const existingRolePermissions=await RolePermission.find({
+        roleId:role._id,
+        permissionId:{$in:permissionIds}
+    }).lean();
+
+    const existingPermissionIds=new Set(
+        existingRolePermissions.map(item=>item.permissionId.toString())
+    );
+
+    const rolePermissions=permissions
+        .filter(permission=>!existingPermissionIds.has(permission._id.toString()))
+        .map(permission=>({
+            roleId:role._id,
+            permissionId:permission._id
+        }));
+
+    if(rolePermissions.length)
+        await RolePermission.insertMany(rolePermissions);
+
+    return{
+        assignedPermissions:rolePermissions.length
     };
 };

@@ -19,7 +19,7 @@ module.exports = async ({ user, name, description, scope, hasFullAccess = false 
         description,
         scope,
         hasFullAccess,
-        businessId: user.scope === "BUSINESS" ? user.businessId : null
+        businessId: scope === "BUSINESS" ? user.businessId : null
     });
 
     return {
