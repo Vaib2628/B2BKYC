@@ -11,13 +11,13 @@ module.exports = async ({ roleId, user }) => {
     if (role.scope === "SYSTEM" && user.scope === "BUSINESS")
         throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ROLE_OUT_OF_SCOPE);
 
-    if (role.scope === "BUSINESS" && user.scope !== "SYSTEM" && !role.businessId.equals(user.businessId))
+    if (role.scope === "BUSINESS" && user.scope === "BUSINESS" && !role.businessId.equals(user.businessId))
         throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ACCESS_NOT_ALLOWED);
 
-    return RolePermission.aggregate([
+    const [permission] = await RolePermission.aggregate([
         {
             $match: {
-                roleId: new mongoose.Types.ObjectId("6a0ec95273497c5db12ac32b")
+                roleId: new mongoose.Types.ObjectId(roleId)
             }
         },
         {
@@ -29,7 +29,21 @@ module.exports = async ({ roleId, user }) => {
             }
         },
         {
-            $project: { roleId: 1, permissions: 1 }
+            $unwind: "$permissions"
+        },
+        {
+            $group: {
+                _id: "$roleId",
+                permissions: { $push: "$permissions" }
+            }
         }
     ]);
+    return (
+        permission || {
+            _id: roleId,
+            scope: role.scope,
+            hasFullAccess: role.hasFullAccess,
+            permissions: []
+        }
+    );
 };

@@ -13,7 +13,7 @@ router.post(
     validate(roleValidator.createRole),
     requirePermission({ permission: "role.create" }),
     asyncHandler(async function _createRole(req, res, next) {
-        const data = await require("../controllers/roles/createRole.js")({user: req.user, ...req.body });
+        const data = await require("../controllers/roles/createRole.js")({ user: req.user, ...req.body });
         return res.success({ data });
     })
 );
@@ -31,7 +31,7 @@ router.post(
 
 router.get(
     "/",
-    requirePermission({ permission: "role.read"}),
+    requirePermission({ permission: "role.read" }),
     asyncHandler(async function _getRoles(req, res, next) {
         const data = await require("../controllers/roles/getRoles.js")(req.user);
         return res.success({ data });
