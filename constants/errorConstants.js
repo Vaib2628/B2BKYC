@@ -28,7 +28,7 @@ module.exports = {
         INVALID_REFRESH_TOKEN: "Invalid refresh token.",
         INVALID_OR_EXPIRED_TOKEN: "Invalid or expired token.",
         TOKEN_NOT_FOUND: "Unauthorized request, Token not found or expired may be",
-        MEMBERSHIP_NOT_FOUND: "Membership not found.",
+        MEMBERSHIP_NOT_FOUND: "No active membership not found.",
 
         INVALID_CURRENT_PASSWORD: "Current Password is not valid",
         UNAUTHORIZED: "Unauthenticated access.",
@@ -60,6 +60,8 @@ module.exports = {
         DISPUTE_NOT_FOUND: "Dispute not found",
         DISPUTE_ACCESS_DENIED: "You do not have the access to this dispute",
         INVALID_DISPUTE_RESOLVER: "The business that raised the dispute cannot resolve it",
-        DISPUTE_ALREADY_RESOLVED: "Dispute has already been resolved"
+        DISPUTE_ALREADY_RESOLVED: "Dispute has already been resolved",
+        ACCESS_TOKEN_MISSING: "Authentication required. Access token is missing.",
+        INVALID_ACCESS_TOKEN: "Your session is invalid. Please sign in again."
     }
 };

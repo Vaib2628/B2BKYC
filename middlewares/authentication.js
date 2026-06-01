@@ -7,19 +7,19 @@ const Membership = require("../models/Membership");
 module.exports = async (req, res, next) => {
     const accessToken = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
 
-    if (!accessToken) return next(createHttpError(STATUS_CODES.UNAUTHORIZED, "Access token is missing"));
+    if (!accessToken) return next(createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.ACCESS_TOKEN_MISSING));
     try {
         const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
 
         const user = await User.findById(decoded._id);
-        if (!user) return next(createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.UNAUTHORIZED));
+        if (!user) return next(createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.USER_NOT_FOUND));
 
         const membership = await Membership.findOne({
             _id: decoded.membershipId,
             userId: decoded._id,
             status: "ACTIVE"
         });
-        if (!membership) return next(createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.UNAUTHORIZED));
+        if (!membership) return next(createHttpError(STATUS_CODES.UNAUTHORIZED, ERROR_MESSAGES.MEMBERSHIP_NOT_FOUND));
 
         req.user = {
             _id: decoded._id,
