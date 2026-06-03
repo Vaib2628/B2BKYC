@@ -2,8 +2,9 @@ const createHttpError = require("http-errors");
 const Deal = require("../../models/Deal");
 const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants");
 const createDealTimeline = require("../../services/createDealTimeline");
-const { dealTimelineEvent } = require("../../constants/constants");
+const { dealTimelineEvent, trustHistoryEvents } = require("../../constants/constants");
 const createAuditLog = require("../../services/createAuditLog");
+const updateTrustScore = require("../../services/trustscore/updateTrustScore");
 
 module.exports = async ({ user, dealId }) => {
     const deal = await Deal.findById(dealId).populate("counterPartyBusinessId", "legalName");
@@ -26,6 +27,13 @@ module.exports = async ({ user, dealId }) => {
         currentState: "REJECTED",
         event: dealTimelineEvent.DEAL_REJECTED,
         description: `${deal.counterPartyBusinessId.legalName} rejected the deal`
+    });
+
+    await updateTrustScore({
+        businessId: user.businessId,
+        event: trustHistoryEvents.DEAL_REJECTED,
+        reason: `Rejected the deal with ${deal.counterPartyBusinessId.legalName}`,
+        user
     });
 
     await createAuditLog({

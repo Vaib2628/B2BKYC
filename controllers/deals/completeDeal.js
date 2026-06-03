@@ -1,9 +1,10 @@
 const createHttpError = require("http-errors");
 const Deal = require("../../models/Deal");
 const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants");
-const { dealTimelineEvent } = require("../../constants/constants");
+const { dealTimelineEvent, trustHistoryEvents } = require("../../constants/constants");
 const createAuditLog = require("../../services/createAuditLog");
 const createDealTimeline = require("../../services/createDealTimeline");
+const updateTrustScore = require("../../services/trustscore/updateTrustScore");
 
 module.exports = async ({ user, dealId }) => {
     const deal = await Deal.findById(dealId)
@@ -46,7 +47,14 @@ module.exports = async ({ user, dealId }) => {
             deal.status === "COMPLETED"
                 ? `Deal completed successfully by both parties`
                 : `${deal[isInitiator ? "createdByBusinessId" : "counterPartyBusinessId"].tradeName} completed the deal`
-});
+    });
+
+    await updateTrustScore({
+        businessId: user.businessId,
+        event: trustHistoryEvents.DEAL_COMPLETED,
+        reason: `Completed the deal ${deal.title}`,
+        user
+    });
 
     await createAuditLog({
         actorId: user._id,
