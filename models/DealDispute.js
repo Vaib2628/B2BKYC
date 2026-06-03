@@ -7,10 +7,11 @@ const dealDisputeSchema = new mongoose.Schema(
         raisedByUserId: { type: mongoose.Schema.Types.ObjectId, ref: "user", required: true },
         resolvedByBusinessId: { type: mongoose.Schema.Types.ObjectId, ref: "business" },
         resolvedByUserId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+        againstBusinessId: { type: mongoose.Schema.Types.ObjectId, ref: "business", required: true },
         reason: { type: String, trim: true },
         resolutionNote: { type: String, trim: true },
         status: { type: String, enum: ["OPEN", "RESOLVED"], default: "OPEN" },
-        raisedAt: { type: Date , default: Date.now},
+        raisedAt: { type: Date, default: Date.now },
         resolvedAt: { type: Date }
     },
     { timestamps: true }

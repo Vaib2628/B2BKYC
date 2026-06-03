@@ -26,12 +26,16 @@ module.exports = async ({ user, dealId, reason }) => {
     await deal.save();
 
     const business = await Business.findById(user.businessId).select({ tradeName: 1, legalName: 1 });
+    const againstBusinessId = deal.createdByBusinessId._id.equals(user.businessId)
+        ? deal.counterPartyBusinessId
+        : deal.createdByBusinessId;
 
     await DealDispute.create({
         dealId,
         raisedByBusinessId: user.businessId,
         raisedAt: new Date(),
         raisedByUserId: user._id,
+        againstBusinessId,
         reason,
         status: "OPEN"
     });

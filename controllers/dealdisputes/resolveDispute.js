@@ -14,12 +14,8 @@ module.exports = async ({ disputeId, user, resolutionNote }) => {
     const deal = await Deal.findById(dispute.dealId);
     if (!deal) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.DEAL_NOT_FOUND);
 
-    const hasScope =
-        deal.createdByBusinessId._id.equals(user.businessId) || deal.counterPartyBusinessId._id.equals(user.businessId);
+    const hasScope = dispute.againstBusinessId._id.equals(user.businessId);
     if (!hasScope) throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.DISPUTE_ACCESS_DENIED);
-
-    const selfResolver = dispute.raisedByBusinessId._id.equals(user.businessId);
-    if (selfResolver) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.INVALID_DISPUTE_RESOLVER);
 
     const isResolved = dispute.status === "RESOLVED";
     if (isResolved) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.DISPUTE_ALREADY_RESOLVED);

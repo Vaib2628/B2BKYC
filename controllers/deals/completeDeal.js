@@ -44,8 +44,8 @@ module.exports = async ({ user, dealId }) => {
                 : dealTimelineEvent.DEAL_COMPLETION_CONFIRMED,
         description:
             deal.status === "COMPLETED"
-                ? `${deal.title} deal completed successfully by both parties`
-                : `${deal[isInitiator ? "createdByBusinessId" : "counterPartyBusinessId"].tradeName} completed the ${deal.title} deal`
+                ? `Deal completed successfully by both parties`
+                : `${deal[isInitiator ? "createdByBusinessId" : "counterPartyBusinessId"].tradeName} completed the deal`
 });
 
     await createAuditLog({
