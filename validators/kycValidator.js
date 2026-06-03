@@ -18,6 +18,10 @@ module.exports = {
         body("metaData").isObject().withMessage("Meta data is required for the submission")
     ],
 
+    getDocumentByIdValidation: [
+        param("documentId").isMongoId().withMessage("Invalid document ID.")
+    ],
+
     rejectDocumentValidation: [
         param("documentId").isMongoId().withMessage("Invalid document ID."),
         body("rejectionReason").isString().withMessage("Rejection reason is required.")
