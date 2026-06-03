@@ -92,6 +92,23 @@ module.exports = async ({ user, temporaryUploadId, metaData }) => {
             kycStatus: uploadedDocsCount < 4 ? "PENDING_DOCUMENTS" : "UNDER_REVIEW"
         });
     }
-    
+
+    await createAuditLog({
+        businessId: temporaryUpload.businessId,
+        actorId: user._id,
+        module: "KYC",
+        action: "DOCUMENT_SUBMITTED",
+        entityType: "kycdocument",
+        entityId: kycDocument._id,
+        description: `KYC document of type ${kycDocument.documentType} submitted for review`,
+        metadata: {
+            documentType: kycDocument.documentType,
+            documentId: kycDocument._id,
+            documentVersion: kycDocument.version,
+            documentFileName: kycDocument.fileName,
+            isReplacement: isReplacement
+        }
+    });
+
     return { _id: kycDocument._id };
 };
