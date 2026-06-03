@@ -15,7 +15,6 @@ module.exports = async ({ user, dealId, data }) => {
     if (!hasScope) throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.DEAL_ACCESS_DENIED);
 
     const isEditable = ["DRAFT", "PENDING_ACCEPTANCE"].includes(deal.status);
-    console.log(isEditable, deal.status)
     if (!isEditable) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.DEAL_CANNOT_BE_UPDATED);
 
     if (data.counterPartyBusinessId) {

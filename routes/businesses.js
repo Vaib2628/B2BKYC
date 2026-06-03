@@ -19,7 +19,11 @@ router.post(
     validate(businessValidator.onboardBusiness),
     asyncHandler(async function _onboardBusiness(req, res, next) {
         const data = await require("../controllers/businesses/onboardBusiness")(req.body);
-        res.success({ data, message: "Business onboarded successfully", statusCode: 200 });
+        res.success({
+            data,
+            message: "Business Registered, Please verify mail to access the dashboard",
+            statusCode: 200
+        });
     })
 );
 
@@ -27,7 +31,7 @@ router.use(authentication); // All routes below require authentication
 
 router.get(
     "/",
-    requirePermission(["GET_BUSINESSES"], "SYSTEM"),
+    requirePermission({ permission: "business.list", scope: "SYSTEM" }),
     asyncHandler(async function _getBusinesses(req, res, next) {
         const data = await require("../controllers/businesses/getBusinesses.js")(req.query);
         res.success({ data, message: "Businesses retrieved successfully" });
@@ -36,7 +40,7 @@ router.get(
 
 router.get(
     "/counterparties",
-    requirePermission(["GET_COUNTER_PARTY"], "BUSINESS"),
+    requirePermission({ permission: "deal.counterparty.list", scope: "BUSINESS" }),
     asyncHandler(async function _getCounterParties(req, res, next) {
         const data = await require("../controllers/businesses/getCounterParties.js")(req.user.businessId);
         return res.success({ data });

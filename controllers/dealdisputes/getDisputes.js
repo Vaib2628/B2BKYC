@@ -22,6 +22,5 @@ module.exports = async ({ businessId }) => {
         })
         .lean();
     
-    console.log(disputes);
     return disputes.filter((item) => item.dealId);
 };

@@ -5,12 +5,13 @@ const Business = require("../../models/Business");
 const updateTrustScore = require("../../services/trustscore/updateTrustScore");
 const { trustHistoryEvents } = require("../../constants/constants");
 const { default: mongoose } = require("mongoose");
+const createAuditLog = require("../../services/createAuditLog");
 
 module.exports = async ({ documentId, user, forceVerify }) => {
     const document = await KycDocument.findById(documentId);
     if (!document) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.DOC_NOT_FOUND);
 
-    const isVerifiable = document.status !== "VERIFIED";
+    const isVerifiable = document.status !== "PENDING";
     if (!isVerifiable) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.DOC_ALREADY_PROCESSED);
 
     document.status = "VERIFIED";
@@ -74,10 +75,11 @@ module.exports = async ({ documentId, user, forceVerify }) => {
             business.bankDetails.accountType = document.metaData.accountType;
     }
 
-    await document.save();
     if (document.replaceDocumentId) {
         await KycDocument.findByIdAndUpdate(document.replaceDocumentId, { isActive: false });
+        document.isActive = true;
     }
+    await document.save();
 
     // calculating the verified documents count to update the status
     const verifiedDocumentsCount = await KycDocument.countDocuments({
@@ -97,6 +99,27 @@ module.exports = async ({ documentId, user, forceVerify }) => {
         event: trustHistoryEvents.KYC_DOCUMENT_VERIFIED,
         reason: "KYC document verified",
         user
+    });
+
+    await createAuditLog({
+        actorId: user._id,
+        businessId: document.businessId,
+        module: "KYC",
+        action: "DOCUMENT_VERIFIED",
+        entityType: "kyc_document",
+        entityId: document._id,
+        description: `${document.documentType} document verified`,
+        previousData: {
+            status: "PENDING"
+        },
+        currentData: {
+            status: "VERIFIED"
+        },
+        metadata: {
+            documentType: document.documentType,
+            version: document.version,
+            fileName: document.fileName
+        }
     });
 
     return {

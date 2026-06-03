@@ -5,8 +5,7 @@ module.exports = {
     REFRESH_TOKEN_EXPIRY: "7d",
 
     trustScoreConfig: {
-        REQUIRED_KYC_DOCUMENT: 4,
-
+        REQUIRED_KYC_DOCUMENTS: ["GST_CERTIFICATE", "PAN_CARD", "INCORPORATION_CERTIFICATE", "BANK_PROOF"],
         weights: {
             kyc: 40,
             compliance: 20,

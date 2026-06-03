@@ -1,14 +1,19 @@
-module.exports = ({ business, activeDeals, weight, config }) => {
+const normalizeScore = require("../../helpers/normalizeScore");
+
+module.exports = ({ business, recentActivityDeals, activeDeals, weight, config }) => {
     let score = 0;
     if (business.status === "ACTIVE") {
-        normalizedScore += config.businessStatusRatio;
+        score += config.businessStatusRatio;
     }
     if (["VERIFIED", "REQUIRES_RENEWAL"].includes(business.kycStatus)) {
-        normalizedScore += config.kycStatusRatio;
+        score += config.kycStatusRatio;
     }
 
-    const activityRatio = Math.min(recentDeals.length / config.recentDealActivityThreshold, 1);
-    normalizedScore += activityRatio * config.recentDealActivityRatio;
+    const activityRatio = Math.min(recentActivityDeals / config.recentDealActivityThreshold, 1);
+    score += activityRatio * config.recentDealActivityRatio;
 
-    return Math.round(normalizedScore * weight);
+    return normalizeScore({
+        score: score * weight,
+        weight
+    });
 };

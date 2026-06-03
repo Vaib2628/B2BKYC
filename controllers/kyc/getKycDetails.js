@@ -40,6 +40,7 @@ module.exports = async (businessId) => {
     const rejectedDocumentsCount = documents.filter((doc) => doc.status === "REJECTED").length;
 
     return {
+        kycStatus: business.kycStatus,
         summary: {
             totalRequiredDocuments: requiredDocuments.length,
             uploadedDocuments: uploadedDocumentsCount,

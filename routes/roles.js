@@ -11,16 +11,16 @@ router.use(authentication);
 router.post(
     "/",
     validate(roleValidator.createRole),
-    requirePermission(["CREATE_SYSTEM_ROLE", "CREATE_BUSINESS_ROLE"]),
+    requirePermission({ permission: "role.create" }),
     asyncHandler(async function _createRole(req, res, next) {
-        const data = await require("../controllers/roles/createRole.js")(req.body);
+        const data = await require("../controllers/roles/createRole.js")({ user: req.user, ...req.body });
         return res.success({ data });
     })
 );
 
 router.post(
     "/:roleId/permissions",
-    requirePermission(["ASSIGN_PERMISSION_TO_ROLE"]),
+    requirePermission({ permission: "role.assignPermission" }),
     validate(roleValidator.assingPermission),
     asyncHandler(async function _assignPermission(req, res, next) {
         const updatedBody = { user: req.user, roleId: req.params.roleId, permissionIds: req.body.permissionIds };
@@ -31,7 +31,7 @@ router.post(
 
 router.get(
     "/",
-    requirePermission(["GET_ROLES"]),
+    requirePermission({ permission: "role.read" }),
     asyncHandler(async function _getRoles(req, res, next) {
         const data = await require("../controllers/roles/getRoles.js")(req.user);
         return res.success({ data });
@@ -41,7 +41,7 @@ router.get(
 router.get(
     "/:roleId/permissions",
     validate(roleValidator.getRolePermission),
-    requirePermission(["VIEW_ROLE_PERMISSION"]),
+    requirePermission({ permission: "role.readPermissions", scope: "SYSTEM" }),
     asyncHandler(async function _getRolesPermission(req, res, next) {
         const updatedBody = { roleId: req.params.roleId, user: req.user };
         const data = await require("../controllers/roles/getRolePermissions.js")(updatedBody);

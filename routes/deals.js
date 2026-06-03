@@ -10,7 +10,7 @@ router.use(authentication);
 
 router.post(
     "/",
-    requirePermission(["CREATE_DEAL"], "BUSINESS"),
+    requirePermission({ permission: "deal.create", scope: "BUSINESS" }),
     validate(dealValidator.createDeal),
     asyncHandler(async function _createDeal(req, res, next) {
         const updatedBody = { user: req.user, data: req.body };
@@ -21,16 +21,16 @@ router.post(
 
 router.get(
     "/disputes",
-    requirePermission(["VIEW_DISPUTES"], "BUSINESS"),
+    requirePermission({ permission: "dispute.read", scope: "BUSINESS" }),
     asyncHandler(async function _getDisputes(req, res, next) {
-        const data = await require("../controllers/dealdisputes/getDisputes.js")({ businessId: req.user.businessId});
+        const data = await require("../controllers/dealdisputes/getDisputes.js")({ businessId: req.user.businessId });
         return res.success({ data });
     })
 );
 
 router.get(
     "/",
-    requirePermission(["GET_DEALS"], "BUSINESS"),
+    requirePermission({ permission: "deal.read", scope: "BUSINESS" }),
     asyncHandler(async function _getDeals(req, res, next) {
         const data = await require("../controllers/deals/getDeals.js")({
             businessId: req.user.businessId,
@@ -42,7 +42,7 @@ router.get(
 
 router.get(
     "/:id",
-    requirePermission(["GET_DEALS"], "BUSINESS"),
+    requirePermission({ permission: "deal.read", scope: "BUSINESS" }),
     asyncHandler(async function _getDealById(req, res, next) {
         const updatedBody = { user: req.user, dealId: req.params.id };
         const data = await require("../controllers/deals/getDealById.js")(updatedBody);
@@ -52,7 +52,7 @@ router.get(
 
 router.patch(
     "/:id/accept",
-    requirePermission(["ACCEPT_DEAL"], "BUSINESS"),
+    requirePermission({ permission: "deal.accept", scope: "BUSINESS" }),
     asyncHandler(async function _acceptDeal(req, res, next) {
         const updatedBody = { user: req.user, dealId: req.params.id };
         const data = await require("../controllers/deals/acceptDeal.js")(updatedBody);
@@ -62,7 +62,7 @@ router.patch(
 
 router.patch(
     "/:id/reject",
-    requirePermission(["REJECT_DEAL"], "BUSINESS"),
+    requirePermission({ permission: "deal.reject", scope: "BUSINESS" }),
     asyncHandler(async function _rejectDeal(req, res, next) {
         const updatedBody = { user: req.user, dealId: req.params.id };
         const data = await require("../controllers/deals/rejectDeal.js")(updatedBody);
@@ -72,7 +72,7 @@ router.patch(
 
 router.patch(
     "/:id/cancel",
-    requirePermission(["CANCEL_DEAL"], "BUSINESS"),
+    requirePermission({ permission: "deal.cancel", scope: "BUSINESS" }),
     asyncHandler(async function _cancelDeal(req, res, next) {
         const updatedBody = { user: req.user, dealId: req.params.id };
         const data = await require("../controllers/deals/cancelDeal.js")(updatedBody);
@@ -82,7 +82,7 @@ router.patch(
 
 router.patch(
     "/:id/complete",
-    requirePermission(["COMPLETE_DEAL"], "BUSINESS"),
+    requirePermission({ permission: "deal.complete", scope: "BUSINESS" }),
     asyncHandler(async function _completeDeal(req, res, next) {
         const data = await require("../controllers/deals/completeDeal.js")({
             user: req.user,
@@ -94,7 +94,7 @@ router.patch(
 
 router.patch(
     "/:id",
-    requirePermission(["UPDATE_DEAL"], "BUSINESS"),
+    requirePermission({ permission: "deal.update", scope: "BUSINESS" }),
     asyncHandler(async function _updateDeal(req, res, next) {
         const updatedBody = { user: req.user, dealId: req.params.id, data: req.body };
         await require("../controllers/deals/updateDeal.js")(updatedBody);
@@ -105,7 +105,7 @@ router.patch(
 router.post(
     "/:id/disputes",
     validate(disputeValidation.createDispute),
-    requirePermission(["CREATE_DISPUTE"], "BUSINESS"),
+    requirePermission({ permission: "dispute.create", scope: "BUSINESS" }),
     asyncHandler(async function _createDispute(req, res, next) {
         const data = await require("../controllers/dealdisputes/createDispute.js")({
             user: req.user,
@@ -119,7 +119,7 @@ router.post(
 router.post(
     "/disputes/:id/resolve",
     validate(disputeValidation.resolveDispute),
-    requirePermission(["RESOLVE_DISPUTE"], "BUSINESS"),
+    requirePermission({ permission: "dispute.resolve", scope: "BUSINESS" }),
     asyncHandler(async function _resolveDispute(req, res, next) {
         const data = await require("../controllers/dealdisputes/resolveDispute.js")({
             user: req.user,
