@@ -28,6 +28,7 @@ router.get(
 
 router.get(
     "/documents/:documentId",
+    validate(kycValidator.getDocumentByIdValidation),
     requirePermission({ permission: "kyc.read", scope: "BUSINESS" }),
     asyncHandler(async function _getDocumentById(req, res, next) {
         const updatedBody = { documentId: req.params.documentId, user: req.user };
@@ -54,7 +55,7 @@ router.post(
     asyncHandler(async function _createDocument(req, res, next) {
         const updatedBody = { user: req.user, ...req.body };
         const data = await require("../controllers/kyc/createDocument.js")(updatedBody);
-        return res.success({ statusCode: 201, data });
+        return res.success({ statusCode: 201, data, message: "Document created successfully" });
     })
 );
 
@@ -64,7 +65,7 @@ router.delete(
     asyncHandler(async function _deleteDocuement(req, res, next) {
         const updatedBody = { documentId: req.params.documentId, user: req.user, ...req.body };
         await require("../controllers/kyc/deleteDocument.js")(updatedBody);
-        return res.success({ statusCode: 204 });
+        return res.success({ statusCode: 204, message: "Document deleted successfully" });
     })
 );
 
@@ -74,7 +75,7 @@ router.patch(
     asyncHandler(async function _verifyDocument(req, res, next) {
         const updatedBody = { documentId: req.params.documentId, user: req.user, ...req.body };
         const data = await require("../controllers/kyc/verifyDocument.js")(updatedBody);
-        return res.success({ data });
+        return res.success({ data, message: "Document verified successfully" });
     })
 );
 
@@ -85,7 +86,7 @@ router.patch(
     asyncHandler(async function _rejectDocument(req, res, next) {
         const updatedBody = { documentId: req.params.documentId, user: req.user, data: req.body };
         const data = await require("../controllers/kyc/rejectDocument.js")(updatedBody);
-        return res.success({ data });
+        return res.success({ data, message: "Document rejected successfully" });
     })
 );
 
