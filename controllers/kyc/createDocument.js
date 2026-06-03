@@ -28,28 +28,34 @@ module.exports = async ({ user, temporaryUploadId, metaData }) => {
         await existingDoc.updateOne({ isActive: false });
     }
 
+    //validating the metadata fields
+    await require("../../helpers/validateDocumentMetadata")({
+        documentType: temporaryUpload.documentType,
+        metaData
+    });
+
     let isExists = null;
     switch (temporaryUpload.documentType) {
         case "GST_CERTIFICATE":
-            isExists = await Business.findOne({
+            isExists = await Business.exists({
                 gstNumber: metaData.gstNumber,
-                _id: { $ne: new mongoose.Types.ObjectId(temporaryUpload.businessId) }
+                _id: { $ne: temporaryUpload.businessId }
             });
             if (isExists) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.GST_ALREADY_LINKED);
             break;
 
         case "PAN_CARD":
-            isExists = await Business.findOne({
+            isExists = await Business.exists({
                 panNumber: metaData.panNumber,
-                _id: { $ne: new mongoose.Types.ObjectId(temporaryUpload.businessId) }
+                _id: { $ne: temporaryUpload.businessId }
             });
             if (isExists) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.PAN_ALREADY_LINKED);
             break;
 
         case "INCORPORATION_CERTIFICATE":
-            isExists = await Business.findOne({
+            isExists = await Business.exists({
                 cinNumber: metaData.cinNumber,
-                _id: { $ne: new mongoose.Types.ObjectId(temporaryUpload.businessId) }
+                _id: { $ne: temporaryUpload.businessId }
             });
             if (isExists) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.CIN_ALREADY_LINKED);
             break;
@@ -74,14 +80,18 @@ module.exports = async ({ user, temporaryUploadId, metaData }) => {
     temporaryUpload.status = "CONFIRMED";
     await temporaryUpload.save();
 
-    // Updating the business aggregate status of the kyc
-    const uploadedDocsCount = await KycDocument.countDocuments({
-        businessId: user.businessId,
-        isActive: true
-    });
-    if (uploadedDocsCount < 4)
-        await Business.findByIdAndUpdate(temporaryUpload.businessId, { kycStatus: "PENDING_DOCUMENTS" });
-    else await Business.findByIdAndUpdate(temporaryUpload.businessId, { kycStatus: "UNDER_REVIEW" });
+    const isReplacement = existingDoc?.status === "VERIFIED";
 
+    if (!isReplacement) {
+        const uploadedDocsCount = await KycDocument.countDocuments({
+            businessId: user.businessId,
+            isActive: true
+        });
+
+        await Business.findByIdAndUpdate(temporaryUpload.businessId, {
+            kycStatus: uploadedDocsCount < 4 ? "PENDING_DOCUMENTS" : "UNDER_REVIEW"
+        });
+    }
+    
     return { _id: kycDocument._id };
 };
