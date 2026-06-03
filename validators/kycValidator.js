@@ -1,4 +1,4 @@
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 const createHttpError = require("http-errors");
 const { STATUS_CODES, ERROR_MESSAGES } = require("../constants/errorConstants");
 
@@ -16,5 +16,10 @@ module.exports = {
     createDocumentValidation: [
         body("temporaryUploadId").isMongoId().withMessage("Temporary upload id is required."),
         body("metaData").isObject().withMessage("Meta data is required for the submission")
+    ],
+
+    rejectDocumentValidation: [
+        param("documentId").isMongoId().withMessage("Invalid document ID."),
+        body("rejectionReason").isString().withMessage("Rejection reason is required.")
     ]
 };
