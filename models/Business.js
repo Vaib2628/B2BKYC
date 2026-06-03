@@ -20,10 +20,7 @@ const businessSchema = new mongoose.Schema(
             line2: String,
             city: String,
             state: String,
-            country: {
-                type: String,
-                default: "India"
-            },
+            country: String,
             pincode: String
         },
         kycStatus: {
@@ -32,6 +29,7 @@ const businessSchema = new mongoose.Schema(
                 "DRAFT",
                 "PENDING_DOCUMENTS",
                 "UNDER_REVIEW",
+                "ACTION_REQUIRED",
                 "PARTIALLY_VERIFIED",
                 "VERIFIED",
                 "REJECTED",

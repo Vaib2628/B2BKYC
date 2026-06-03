@@ -73,7 +73,7 @@ module.exports = async ({ user, temporaryUploadId, metaData }) => {
         metaData: metaData,
         replaceDocumentId: existingDoc ? existingDoc._id : null,
         version: existingDoc ? existingDoc.version + 1 : 1,
-        status: "PENDING"
+        isActive: existingDoc?.status === "VERIFIED" ? false : true
     });
 
     // Marking the temporary upload as completed

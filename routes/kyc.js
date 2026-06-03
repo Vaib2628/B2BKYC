@@ -81,6 +81,7 @@ router.patch(
 router.patch(
     "/documents/:documentId/reject",
     requirePermission({ permission: "kyc.reject", scope: "SYSTEM" }),
+    validate(kycValidator.rejectDocumentValidation),
     asyncHandler(async function _rejectDocument(req, res, next) {
         const updatedBody = { documentId: req.params.documentId, user: req.user, data: req.body };
         const data = await require("../controllers/kyc/rejectDocument.js")(updatedBody);
