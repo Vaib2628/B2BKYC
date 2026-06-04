@@ -7,8 +7,8 @@ module.exports = async (userData) => {
     const business = await Business.findById(userData.businessId).select("legalName companyType kycStatus trustScore");
 
     const membership = await Membership.findOne(userData.membershipId)
-        .populate("roleId", "name type hasFullAccess scope")
-        .select("status");
+        .populate("roleId", "name type hasFullAccess")
+        .select("status scope");
 
     return {
         user,
