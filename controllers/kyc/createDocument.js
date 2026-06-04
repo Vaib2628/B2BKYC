@@ -4,6 +4,7 @@ const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants
 const KycDocument = require("../../models/KycDocument");
 const Business = require("../../models/Business");
 const { default: mongoose } = require("mongoose");
+const createAuditLog = require("../../services/createAuditLog");
 
 module.exports = async ({ user, temporaryUploadId, metaData }) => {
     const temporaryUpload = await TemporaryUpload.findById(temporaryUploadId);
@@ -12,17 +13,11 @@ module.exports = async ({ user, temporaryUploadId, metaData }) => {
     const hasScope = temporaryUpload.businessId.equals(user.businessId) && temporaryUpload.uploadedBy.equals(user._id);
     if (!hasScope) throw new createHttpError(STATUS_CODES.FORBIDDEN, ERROR_MESSAGES.ACCESS_NOT_ALLOWED);
 
-    if (temporaryUpload.status !== "PENDING")
-        throw new createHttpError(STATUS_CODES.BAD_REQUEST, ERROR_MESSAGES.UPLOAD_ALREADY_PROCESSED);
-
     const existingDoc = await KycDocument.findOne({
         businessId: temporaryUpload.businessId,
         documentType: temporaryUpload.documentType,
         isActive: true
     });
-
-    // if (existingDoc?.status === "PENDING")
-    //     throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.DOC_UNDER_REVIEW);
 
     if (existingDoc && existingDoc?.status !== "VERIFIED") {
         await existingDoc.updateOne({ isActive: false });
@@ -76,9 +71,8 @@ module.exports = async ({ user, temporaryUploadId, metaData }) => {
         isActive: existingDoc?.status === "VERIFIED" ? false : true
     });
 
-    // Marking the temporary upload as completed
-    temporaryUpload.status = "CONFIRMED";
-    await temporaryUpload.save();
+    // Deleting the temporary upload after creating the KYC document
+    await TemporaryUpload.findByIdAndDelete(temporaryUpload._id);
 
     const isReplacement = existingDoc?.status === "VERIFIED";
 
