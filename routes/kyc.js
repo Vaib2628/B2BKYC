@@ -37,6 +37,25 @@ router.get(
     })
 );
 
+router.get(
+    "/review-queue",
+    requirePermission({ permission: "kyc.reviewQueue", scope: "SYSTEM" }),
+    asyncHandler(async function _getReviewQueue(req, res, next) {
+        const data = await require("../controllers/kyc/getReviewQueue.js")();
+        return res.success({ data });
+    })
+);
+
+router.get(
+    "/review-queue/:documentId",
+    validate(kycValidator.getReviewDocumentByIdValidation),
+    requirePermission({ permission: "kyc.reviewQueue", scope: "SYSTEM" }),
+    asyncHandler(async function _getReviewDocumentById(req, res, next) {
+        const data = await require("../controllers/kyc/getReviewDocumentById.js")(req.params.documentId);
+        return res.success({ data });
+    })
+);
+
 router.post(
     "/documents/upload",
     upload.single("document"),

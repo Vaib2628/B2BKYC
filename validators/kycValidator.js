@@ -21,6 +21,10 @@ module.exports = {
     getDocumentByIdValidation: [
         param("documentId").isMongoId().withMessage("Invalid document ID.")
     ],
+    
+    getReviewDocumentByIdValidation: [
+        param("documentId").isMongoId().withMessage("Invalid document ID.")
+    ],
 
     rejectDocumentValidation: [
         param("documentId").isMongoId().withMessage("Invalid document ID."),

@@ -6,6 +6,8 @@ const generateReferenceNumber = require("../../helpers/generateReferenceNumber")
 const createDealTimeline = require("../../services/createDealTimeline");
 const { dealTimelineEvent } = require("../../constants/constants");
 const createAuditLog = require("../../services/createAuditLog");
+const updateTrustScore = require("../../services/trustscore/updateTrustScore");
+const trustHistoryEvents = require("../../constants/constants").trustHistoryEvents;
 
 module.exports = async ({ user, data }) => {
     const createdByBusinessId = user.businessId;
@@ -16,7 +18,8 @@ module.exports = async ({ user, data }) => {
         status: "ACTIVE",
         kycStatus: { $in: ["VERIFIED", "REQUIRES_RENEWAL"] }
     });
-    if (!counterParty) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.COUNTERPARTY_NOT_ELIGIBLE_FOR_DEALS);
+    if (!counterParty)
+        throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.COUNTERPARTY_NOT_ELIGIBLE_FOR_DEALS);
 
     const isSelf = counterParty._id.equals(user.businessId);
     if (isSelf) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.CAN_NOT_CREATE_DEAL_WITH_OWN);
@@ -36,6 +39,13 @@ module.exports = async ({ user, data }) => {
         referenceNumber,
         status: "PENDING_ACCEPTANCE",
         ...data
+    });
+
+    await updateTrustScore({
+        businessId: user.businessId,
+        event: trustHistoryEvents.DEAL_CREATED,
+        reason: `Created a deal with ${counterParty.tradeName}`,
+        user
     });
 
     await createDealTimeline({
