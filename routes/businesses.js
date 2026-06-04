@@ -29,11 +29,11 @@ router.post(
 
 router.use(authentication); // All routes below require authentication
 
-router.get(
+router.post(
     "/",
     requirePermission({ permission: "business.list", scope: "SYSTEM" }),
     asyncHandler(async function _getBusinesses(req, res, next) {
-        const data = await require("../controllers/businesses/getBusinesses.js")(req.query);
+        const data = await require("../controllers/businesses/getBusinesses.js")(req.body);
         res.success({ data, message: "Businesses retrieved successfully" });
     })
 );
@@ -46,4 +46,15 @@ router.get(
         return res.success({ data });
     })
 );
+
+router.get(
+    "/:businessId",
+    requirePermission({ permission: "business.view", scope: "SYSTEM" }),
+    validate(businessValidator.getBusinessById),
+    asyncHandler(async function _getBusiness(req, res, next) {
+        const data = await require("../controllers/businesses/getBusinessById.js")(req.params.businessId);
+        res.success({ data, message: "Business retrieved successfully" });
+    })
+);
+
 module.exports = router;
