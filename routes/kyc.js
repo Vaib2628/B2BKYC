@@ -37,11 +37,11 @@ router.get(
     })
 );
 
-router.get(
+router.post(
     "/review-queue",
     requirePermission({ permission: "kyc.reviewQueue", scope: "SYSTEM" }),
     asyncHandler(async function _getReviewQueue(req, res, next) {
-        const data = await require("../controllers/kyc/getReviewQueue.js")();
+        const data = await require("../controllers/kyc/getReviewQueue.js")(req.body);
         return res.success({ data });
     })
 );
