@@ -6,5 +6,5 @@ module.exports = async (businessId) => {
         _id: { $ne: new mongoose.Types.ObjectId(businessId) },
         status: "ACTIVE",
         kycStatus: { $in: ["VERIFIED", "REQUIRES_RENEWAL"] }
-    }).select("businessName tradeName legalName trustScore");
+    }).select("businessName tradeName legalName trustScore kycStatus").lean();
 };
