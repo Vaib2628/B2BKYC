@@ -3,7 +3,8 @@ const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants
 const Deal = require("../../models/Deal");
 const createAuditLog = require("../../services/createAuditLog");
 const createDealTimeline = require("../../services/createDealTimeline");
-const { dealTimelineEvent } = require("../../constants/constants");
+const { dealTimelineEvent, trustHistoryEvents } = require("../../constants/constants");
+const updateTrustScore = require("../../services/trustscore/updateTrustScore");
 
 module.exports = async ({ user, dealId }) => {
     const deal = await Deal.findById(dealId).populate("createdByBusinessId", "legalName");
@@ -22,7 +23,14 @@ module.exports = async ({ user, dealId }) => {
         previousState: deal.status,
         currentState: "CANCELLED",
         event: dealTimelineEvent.DEAL_CANCELLED,
-        description: `${deal.createdByBusinessId.legalName} rejected the deal`
+        description: `${deal.createdByBusinessId.legalName} cancelled the deal`
+    });
+
+    await updateTrustScore({
+        businessId: user.businessId,
+        event: trustHistoryEvents.DEAL_CANCELLED,
+        reason: `Cancelled the ${deal.title} deal`,
+        user
     });
 
     await createAuditLog({
