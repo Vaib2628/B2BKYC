@@ -4,13 +4,12 @@ module.exports = async ({ model, filter = {}, populate, options = {}, select, so
     const skip = (page - 1) * limit;
 
     let query = model.find(filter).skip(skip).limit(limit).sort(sort);
-    if (select) query = query.select(select);
-    if (populate) query = query.populate(populate);
+    if (select) query.select(select);
+    if (populate) query.populate(populate);
 
-    const [totalDocs, docs] = await Promise.all([model.countDocuments(filter), query.exec()]);
+    const [totalDocs, docs] = await Promise.all([model.countDocuments(filter), query]);
 
     const totalPages = Math.ceil(totalDocs / limit);
-
     return {
         docs,
         paginate: {
