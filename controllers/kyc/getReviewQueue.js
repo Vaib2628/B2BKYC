@@ -7,7 +7,7 @@ module.exports = async (options) => {
         filter: { status: "PENDING" },
         options,
         sort: { createdAt: -1 },
-        populate: { path: "businessId", select: "tradeName legalName" },
+        populate: [{ path: "businessId", select: "businessName" }],
         select: "-fileUrl -fileName -fileSize -metaData -ocrExtractedData"
     });
 };
