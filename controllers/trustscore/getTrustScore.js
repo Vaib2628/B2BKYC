@@ -7,7 +7,7 @@ module.exports = async ({ businessId }) => {
     const business = await Business.findById(businessId);
     if (!business) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.BUSINESS_NOT_FOUND)
 
-    const trustScoreHistory = await TrustScoreHistory.find({businessId}).select({businessId: 0, _id: 0});
+    const trustScoreHistory = await TrustScoreHistory.find({businessId}).select({businessId: 0, _id: 0}).sort({createdAt: 1});
     return {
         trustScore: business.trustScore,
         history: trustScoreHistory
