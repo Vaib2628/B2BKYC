@@ -11,7 +11,7 @@ module.exports = async ({ documentId, user, forceVerify }) => {
     const document = await KycDocument.findById(documentId);
     if (!document) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.DOC_NOT_FOUND);
 
-    const isVerifiable = document.status !== "PENDING";
+    const isVerifiable = document.status === "PENDING";
     if (!isVerifiable) throw new createHttpError(STATUS_CODES.CONFLICT, ERROR_MESSAGES.DOC_ALREADY_PROCESSED);
 
     document.status = "VERIFIED";
@@ -136,13 +136,14 @@ const normalize = (value = "") =>
 const checkMismatch = (conflictFields = [], business, document) => {
     return conflictFields
         .map((field) => {
-            if (
-                business[field]
-                && document.metaData[field]
-                && normalize(business[field]) !== normalize(document.metaData[field])
-            ) {
+            const existingValue = business[field];
+            const submittedValue = document.metaData[field];
+
+            if (existingValue && submittedValue && normalize(existingValue) !== normalize(submittedValue)) {
                 return {
-                    field: `${field}`,
+                    field,
+                    existingValue,
+                    submittedValue,
                     message: `${field} mismatch identified`
                 };
             }
