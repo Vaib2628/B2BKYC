@@ -4,6 +4,7 @@ const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants
 const KycDocument = require("../../models/KycDocument");
 const Business = require("../../models/Business");
 const { default: mongoose } = require("mongoose");
+const createAuditLog = require("../../services/createAuditLog");
 
 module.exports = async ({ user, temporaryUploadId, metaData }) => {
     const temporaryUpload = await TemporaryUpload.findById(temporaryUploadId);
