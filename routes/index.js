@@ -8,5 +8,6 @@ router.use("/roles", require("./roles"))
 router.use("/permissions", require("./permissions"))
 router.use("/deals",require("./deals"))
 router.use("/trustscore", require("./trustscore"))
+router.use("/audit-logs", require("./audits"))
 
 module.exports = router;
