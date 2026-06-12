@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+  const socket = require("../config/socket")
 /**
  * Module dependencies.
  */
@@ -22,6 +22,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+socket.init(server);
 
 /**
  * Listen on provided port, on all network interfaces.
