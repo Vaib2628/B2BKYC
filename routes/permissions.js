@@ -21,7 +21,7 @@ router.post(
 
 router.get(
     "/",
-    requirePermission({ permission: "permission.read", scope: "SYSTEM" }),
+    requirePermission({ permission: "permission.read" }),
     asyncHandler(async function _getPermissions(req, res, next) {
         const updatedBody = { user: req.user, data: req.body };
         const data = await require("../controllers/permissions/getPermissions.js")(updatedBody);
