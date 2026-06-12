@@ -45,8 +45,10 @@ module.exports = async ({ documentId, user, data }) => {
         business.kycStatus = "ACTION_REQUIRED";
     } else if (verifiedCount > 0) {
         business.kycStatus = "PARTIALLY_VERIFIED";
-    } else {
+    } else if (activeDocs.length === 4) {
         business.kycStatus = "UNDER_REVIEW";
+    } else {
+        business.kycStatus = "PENDING_DOCUMENTS";
     }
 
     await business.save();

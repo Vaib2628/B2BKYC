@@ -29,21 +29,44 @@ router.post(
 
 router.use(authentication); // All routes below require authentication
 
-router.get(
+router.post(
     "/",
     requirePermission({ permission: "business.list", scope: "SYSTEM" }),
     asyncHandler(async function _getBusinesses(req, res, next) {
-        const data = await require("../controllers/businesses/getBusinesses.js")(req.query);
+        const data = await require("../controllers/businesses/getBusinesses.js")(req.body);
         res.success({ data, message: "Businesses retrieved successfully" });
     })
 );
 
-router.get(
+router.post(
     "/counterparties",
     requirePermission({ permission: "deal.counterparty.list", scope: "BUSINESS" }),
     asyncHandler(async function _getCounterParties(req, res, next) {
-        const data = await require("../controllers/businesses/getCounterParties.js")(req.user.businessId);
-        return res.success({ data });
+        const data = await require("../controllers/businesses/getCounterParties.js")({
+            businessId: req.user.businessId,
+            options: req.body.options
+        });
+        return res.success({ data: data.docs, paginate: data.paginate });
     })
 );
+
+router.get(
+    "/:businessId",
+    requirePermission({ permission: "business.view", scope: "SYSTEM" }),
+    validate(businessValidator.getBusinessById),
+    asyncHandler(async function _getBusiness(req, res, next) {
+        const data = await require("../controllers/businesses/getBusinessById.js")(req.params.businessId);
+        return res.success({ data, message: "Business retrieved successfully" });
+    })
+);
+
+router.get(
+    "/:businessId/profile",
+    requirePermission({ permission: "business.view", scope: "BUSINESS" }),
+    asyncHandler(async function _getProfile(req, res, next) {
+        const data = await require("../controllers/businesses/getProfile.js")(req.params.businessId);
+        return res.success({ data, message: "Profile fetched successfully." });
+    })
+);
+
 module.exports = router;

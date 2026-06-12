@@ -2,8 +2,7 @@ const KycDocument = require("../../models/KycDocument");
 
 module.exports = async (user) => {
     return KycDocument.find({
-        businessId: user.businessId,
-        isActive: true
+        businessId: user.businessId
     })
         .select(
             `

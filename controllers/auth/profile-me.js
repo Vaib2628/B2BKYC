@@ -8,7 +8,7 @@ module.exports = async (userData) => {
 
     const membership = await Membership.findOne(userData.membershipId)
         .populate("roleId", "name type hasFullAccess")
-        .select("status");
+        .select("status scope");
 
     return {
         user,
