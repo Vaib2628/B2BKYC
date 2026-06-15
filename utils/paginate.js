@@ -3,7 +3,7 @@ module.exports = async ({ model, filter = {}, populate, options = {}, select, so
     const limit = parseInt(options.limit, 10) || 10;
     const skip = (page - 1) * limit;
 
-    let query = model.find(filter).skip(skip).limit(limit).sort(sort);
+    let query = model.find(filter).skip(skip).limit(limit).sort(sort).lean();
     if (select) query.select(select);
     if (populate) query.populate(populate);
 
