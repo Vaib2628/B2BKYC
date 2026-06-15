@@ -5,9 +5,10 @@ const createDealTimeline = require("../../services/createDealTimeline");
 const { dealTimelineEvent, trustHistoryEvents } = require("../../constants/constants");
 const createAuditLog = require("../../services/createAuditLog");
 const updateTrustScore = require("../../services/trustscore/updateTrustScore");
+const createNotification = require("../../services/createNotification");
 
 module.exports = async ({ user, dealId }) => {
-    const deal = await Deal.findById(dealId).populate("counterPartyBusinessId", "legalName");
+    const deal = await Deal.findById(dealId).populate("counterPartyBusinessId", "tradeName");
     if (!deal) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.DEAL_NOT_FOUND);
 
     const hasScope = deal.counterPartyBusinessId._id.equals(user.businessId);
@@ -26,13 +27,13 @@ module.exports = async ({ user, dealId }) => {
         previousState: "PENDING_ACCEPTANCE",
         currentState: "REJECTED",
         event: dealTimelineEvent.DEAL_REJECTED,
-        description: `${deal.counterPartyBusinessId.legalName} rejected the deal`
+        description: `${deal.counterPartyBusinessId.tradeName} rejected the deal`
     });
 
     await updateTrustScore({
         businessId: user.businessId,
         event: trustHistoryEvents.DEAL_REJECTED,
-        reason: `Rejected the deal with ${deal.counterPartyBusinessId.legalName}`,
+        reason: `Rejected the deal with ${deal.counterPartyBusinessId.tradeName}`,
         user
     });
 
@@ -53,6 +54,16 @@ module.exports = async ({ user, dealId }) => {
         metadata: {
             referenceNumber: deal.referenceNumber
         }
+    });
+
+    await createNotification({
+        businessId: deal.createdByBusinessId,
+        type: "DEAL_REJECTED",
+        title: "Deal Rejected",
+        message: `${deal.counterPartyBusinessId.tradeName} rejected your deal request.`,
+        targetPermission: "deal.read",
+        entityType: "DEAL",
+        entityId: deal._id
     });
 
     return {

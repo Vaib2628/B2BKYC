@@ -8,6 +8,7 @@ const { dealTimelineEvent } = require("../../constants/constants");
 const createAuditLog = require("../../services/createAuditLog");
 const updateTrustScore = require("../../services/trustscore/updateTrustScore");
 const trustHistoryEvents = require("../../constants/constants").trustHistoryEvents;
+const createNotification = require("../../services/createNotification");
 
 module.exports = async ({ user, data }) => {
     const createdByBusinessId = user.businessId;
@@ -74,6 +75,16 @@ module.exports = async ({ user, data }) => {
         metadata: {
             referenceNumber: deal.referenceNumber
         }
+    });
+
+    await createNotification({
+        businessId: deal.counterPartyBusinessId,
+        type: "DEAL_CREATED",
+        title: "New Deal Request",
+        message: `${business.tradeName} has created a new deal.`,
+        targetPermission: "deal.read",
+        entityType: "DEAL",
+        entityId: deal._id
     });
 
     return {
