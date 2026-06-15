@@ -6,6 +6,7 @@ const DealDispute = require("../../models/DealDispute");
 const createDealTimeline = require("../../services/createDealTimeline");
 const { dealTimelineEvent } = require("../../constants/constants");
 const createAuditLog = require("../../services/createAuditLog");
+const createNotification = require("../../services/createNotification");
 
 module.exports = async ({ user, dealId, reason }) => {
     const deal = await Deal.findById(dealId);
@@ -30,7 +31,7 @@ module.exports = async ({ user, dealId, reason }) => {
         ? deal.counterPartyBusinessId
         : deal.createdByBusinessId;
 
-    await DealDispute.create({
+    const dispute = await DealDispute.create({
         dealId,
         raisedByBusinessId: user.businessId,
         raisedAt: new Date(),
@@ -64,6 +65,19 @@ module.exports = async ({ user, dealId, reason }) => {
         currentData: {
             status: deal.status
         },
+        metadata: {
+            referenceNumber: deal.referenceNumber
+        }
+    });
+
+    await createNotification({
+        businessId: againstBusinessId,
+        type: "DISPUTE_CREATED",
+        title: "Dispute Raised",
+        message: `${business.tradeName} has raised a dispute for deal ${deal.referenceNumber}.`,
+        targetPermission: "dispute.read",
+        entityType: "DISPUTE",
+        entityId: dispute._id,
         metadata: {
             referenceNumber: deal.referenceNumber
         }

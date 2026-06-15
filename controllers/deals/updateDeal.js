@@ -3,8 +3,9 @@ const { STATUS_CODES, ERROR_MESSAGES } = require("../../constants/errorConstants
 const Deal = require("../../models/Deal");
 const Business = require("../../models/Business");
 const createDealTimeline = require("../../services/createDealTimeline");
-const { dealTimelineEvent } = require("../../constants/constants");
+const { dealTimelineEvent, trustHistoryEvents } = require("../../constants/constants");
 const createAuditLog = require("../../services/createAuditLog");
+const updateTrustScore = require("../../services/trustscore/updateTrustScore");
 
 module.exports = async ({ user, dealId, data }) => {
     const deal = await Deal.findById(dealId).populate("createdByBusinessId", "tradeName legalName");
@@ -41,6 +42,13 @@ module.exports = async ({ user, dealId, data }) => {
         description: `${deal.createdByBusinessId.tradeName} updated the deal`,
         previousState: deal.status,
         currentState: deal.status
+    });
+
+    await updateTrustScore({
+        businessId: user.businessId,
+        event: trustHistoryEvents.DEAL_UPDATED,
+        reason: `Updated the deal with ${deal.createdByBusinessId.tradeName}`,
+        user
     });
 
     await createAuditLog({

@@ -5,9 +5,10 @@ const createDealTimeline = require("../../services/createDealTimeline");
 const { dealTimelineEvent, trustHistoryEvents } = require("../../constants/constants");
 const createAuditLog = require("../../services/createAuditLog");
 const updateTrustScore = require("../../services/trustscore/updateTrustScore");
+const createNotification = require("../../services/createNotification");
 
 module.exports = async ({ user, dealId }) => {
-    const deal = await Deal.findById(dealId).populate("counterPartyBusinessId", "legalName");
+    const deal = await Deal.findById(dealId).populate("counterPartyBusinessId", "tradeName");
     if (!deal) throw new createHttpError(STATUS_CODES.NOT_FOUND, ERROR_MESSAGES.DEAL_NOT_FOUND);
 
     const hasScope = deal.counterPartyBusinessId._id.equals(user.businessId);
@@ -26,7 +27,7 @@ module.exports = async ({ user, dealId }) => {
         currentState: "DRAFT",
         previousState: "PENDING_ACCEPTANCE",
         event: dealTimelineEvent.DEAL_ACCEPTED,
-        description: `${deal.counterPartyBusinessId.legalName} accepted the deal`
+        description: `${deal.counterPartyBusinessId.tradeName} accepted the deal`
     });
 
     await updateTrustScore({
@@ -35,7 +36,7 @@ module.exports = async ({ user, dealId }) => {
         reason: `Accepted the deal ${deal.title}`,
         user
     });
-    
+
     await createAuditLog({
         actorId: user._id,
         businessId: user.businessId,
@@ -53,6 +54,16 @@ module.exports = async ({ user, dealId }) => {
         metadata: {
             referenceNumber: deal.referenceNumber
         }
+    });
+
+    await createNotification({
+        businessId: deal.createdByBusinessId,
+        type: "DEAL_ACCEPTED",
+        title: "Deal Accepted",
+        message: `${deal.counterPartyBusinessId.tradeName} accepted your deal request.`,
+        targetPermission: "deal.read",
+        entityType: "DEAL",
+        entityId: deal._id
     });
 
     return {
