@@ -9,6 +9,6 @@ router.use("/permissions", require("./permissions"))
 router.use("/deals",require("./deals"))
 router.use("/trustscore", require("./trustscore"))
 router.use("/audit-logs", require("./audits"))
-router.use("/notification", require("./notifications"))
+router.use("/notifications", require("./notifications"))
 
 module.exports = router;

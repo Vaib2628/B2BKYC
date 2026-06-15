@@ -43,5 +43,9 @@ module.exports = {
         });
 
         return io;
+    },
+
+    getIO : () => {
+        return io;
     }
 };
