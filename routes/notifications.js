@@ -4,10 +4,13 @@ const asyncHandler = require("../utils/asyncHandler");
 
 router.use(authentication);
 
-router.get(
+router.post(
     "/",
     asyncHandler(async function getNotifications(req, res, next) {
-        const data = await require("../controllers/notifications/getNotifications.js")();
+        const data = await require("../controllers/notifications/getNotifications.js")({
+            user: req.user,
+            options: req.body.options
+        });
         return res.success({ data });
     })
 );

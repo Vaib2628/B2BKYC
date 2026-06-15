@@ -1,5 +1,5 @@
 const Notification = require("../models/Notification");
-const io = require("../config/socket");
+const io = require("../config/socket").getIO();
 
 module.exports = async ({
     businessId,
