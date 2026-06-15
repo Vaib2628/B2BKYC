@@ -5,6 +5,7 @@ const Business = require("../../models/Business");
 const updateTrustScore = require("../../services/trustscore/updateTrustScore");
 const { trustHistoryEvents } = require("../../constants/constants");
 const createAuditLog = require("../../services/createAuditLog");
+const createNotification = require("../../services/createNotification");
 
 module.exports = async ({ documentId, user, data }) => {
     const document = await KycDocument.findById(documentId);
@@ -81,6 +82,19 @@ module.exports = async ({ documentId, user, data }) => {
             documentType: document.documentType,
             version: document.version,
             fileName: document.fileName
+        }
+    });
+
+    await createNotification({
+        businessId: document.businessId,
+        type: "KYC_REJECTED",
+        title: "KYC Document Rejected",
+        message: `${document.documentType} was rejected. Please review and re-upload.`,
+        targetPermission: "kyc.read",
+        entityType: "KYC_DOCUMENT",
+        entityId: document._id,
+        metadata: {
+            rejectionReason: document.rejectionReason
         }
     });
 
