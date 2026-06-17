@@ -1,4 +1,5 @@
 const { body } = require("express-validator");
+const { param } = require("express-validator");
 
 module.exports = {
     createPermission: [
@@ -33,5 +34,33 @@ module.exports = {
             .withMessage("Scope is required")
             .isIn(["SYSTEM", "BUSINESS"])
             .withMessage("Invalid scope")
+    ],
+
+    getPermissionById: [
+        param("permissionId").isMongoId().withMessage("Invalid permission id")
+    ],
+
+    updatePermission: [
+        param("permissionId").isMongoId().withMessage("Invalid permission id"),
+
+        body("resource")
+            .optional()
+            .isString()
+            .withMessage("Resource must be a string")
+            .trim()
+            .toUpperCase(),
+
+        body("action")
+            .optional()
+            .isString()
+            .withMessage("Action must be a string")
+            .trim()
+            .toUpperCase(),
+
+        body("description")
+            .optional()
+            .isString()
+            .withMessage("Description must be a string")
+            .trim()
     ]
 };
