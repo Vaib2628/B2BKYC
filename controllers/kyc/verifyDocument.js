@@ -6,6 +6,7 @@ const updateTrustScore = require("../../services/trustscore/updateTrustScore");
 const { trustHistoryEvents } = require("../../constants/constants");
 const { default: mongoose } = require("mongoose");
 const createAuditLog = require("../../services/createAuditLog");
+const createNotification = require("../../services/createNotification");
 
 module.exports = async ({ documentId, user, forceVerify }) => {
     const document = await KycDocument.findById(documentId);
@@ -120,6 +121,16 @@ module.exports = async ({ documentId, user, forceVerify }) => {
             version: document.version,
             fileName: document.fileName
         }
+    });
+
+    await createNotification({
+        businessId: document.businessId,
+        type: "KYC_VERIFIED",
+        title: "KYC Document Verified",
+        message: `${document.documentType} has been verified successfully.`,
+        targetPermission: "kyc.read",
+        entityType: "KYC_DOCUMENT",
+        entityId: document._id
     });
 
     return {
