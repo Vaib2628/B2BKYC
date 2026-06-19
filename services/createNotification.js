@@ -1,5 +1,6 @@
 const Notification = require("../models/Notification");
 const io = require("../config/socket").getIO();
+const notificationProducer = require("../queue/producers/notification.producer");
 
 module.exports = async ({
     businessId,
@@ -11,7 +12,7 @@ module.exports = async ({
     entityId,
     metadata = {}
 }) => {
-    const notification = await Notification.create({
+    return notificationProducer({
         businessId,
         type,
         title,
@@ -21,8 +22,4 @@ module.exports = async ({
         entityId,
         metadata
     });
-
-    io.to(`business:${businessId}`).emit("notification:new", notification);
-
-    return notification;
 };

@@ -8,18 +8,12 @@ module.exports = async ({ user, options }) => {
 
     const notificationIds = result.docs.map((noti) => noti._id);
 
-    console.log("🚀 ~ :9 ~ notificationIds:", notificationIds);
-
     const reads = await NotificationRead.find({
         notificationId: { $in: notificationIds },
         userId: new mongoose.Types.ObjectId(user._id)
     });
 
-    console.log("🚀 ~ :13 ~ reads:", reads);
     const readMap = new Set(reads.map((read) => read.notificationId.toString()));
-
-    console.log("🚀 ~ :13 ~ readMap:", readMap);
-
     result.docs = result.docs.map((noti) => {
         return {
             ...noti,
